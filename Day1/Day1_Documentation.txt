@@ -1,0 +1,19 @@
+Day 1 - Repository Setup Documentation
+========================================
+
+Student: Amar Turbedari
+Group: 1
+Branch: Amar-Turbedari
+Date: April 14, 2026
+
+Task Completed: Repository Setup
+
+Files Created:
+- hello_world.c: Basic C program that prints "Hello, World!"
+- student_profile.c: C program with student profile structure
+- Day1_Documentation.txt: This documentation file
+
+Notes:
+- Repository name: Internal_Internship_Week_I_Grupi_1
+- All work pushed to personal branch (Amar-Turbedari)
+- No work on main branch

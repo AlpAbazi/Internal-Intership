@@ -1,1 +1,24 @@
 hello_world.c, student_profile.c, Day1_Documentation.docx
+
+
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Hello World");
+    }
+}
+
+
+#include <stdio.h>
+
+int main() {
+    printf("Student Profile");
+    printf("Emri: Andi Xhemili");
+    printf("Klasa: 11");
+    printf("Shkolla: British Gymnasium of Technology");
+    
+    return 0;
+}

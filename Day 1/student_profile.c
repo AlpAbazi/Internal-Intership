@@ -15,5 +15,6 @@ int main() {
     printf("School: %s\n", school);
     printf("Group: %s\n", group);
 
+
     return 0;
 }

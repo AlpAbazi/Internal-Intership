@@ -1,6 +1,4 @@
-
-
-int main() {
+    int main() {
     int mosha;
     char iniciali;
     float gjatesia;

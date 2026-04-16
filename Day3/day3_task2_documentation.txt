@@ -1,0 +1,20 @@
+Day 3 - Task 2 Documentation
+
+What was built:
+A C program that takes a start and end value from the user to define a range, then analyzes the numbers in that range to count and sum even and odd numbers, and determines which category has more numbers.
+
+Logic used:
+- Prompt user for start and end integers.
+- Validate that start <= end; if not, display error and exit.
+- Initialize counters and sums for even and odd numbers.
+- Use a for loop to iterate from start to end inclusive.
+- For each number, check if even (i % 2 == 0) or odd, increment counts and add to sums.
+- Calculate total numbers in range.
+- Display the interval, total, even/odd counts and sums, and compare which has more.
+
+How the solution works:
+1. User inputs start and end.
+2. Validation ensures valid range.
+3. Loop processes each number, categorizing and summing.
+4. Outputs summary statistics and comparison.
+5. Handles edge cases like single number ranges or invalid inputs.

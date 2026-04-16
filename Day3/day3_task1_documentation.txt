@@ -1,0 +1,19 @@
+Day 3 - Task 1 Documentation
+
+What was built:
+A C program that allows the user to choose between displaying a star pattern or a number pattern based on a user-provided size. The program takes input for the pattern type and size, validates the inputs, and prints the pattern using for loops.
+
+Logic used:
+- The program first prompts the user to choose between stars (1) or numbers (2).
+- It then asks for a positive integer between 1 and 12 for the pattern size.
+- Input validation ensures the choice is 1 or 2, and the number is within 1-12. If invalid, it displays an error message and exits.
+- For the star pattern, nested for loops are used: outer loop for rows (1 to n), inner loop for printing '*' up to the current row number.
+- For the number pattern, similar nested loops: outer for rows, inner for printing numbers from 1 to the current row number.
+- Output is formatted with newlines for readability.
+
+How the solution works:
+1. User selects pattern type.
+2. User enters pattern size.
+3. If inputs are valid, the appropriate pattern is printed row by row.
+4. Each row has increasing elements (stars or numbers) forming a right-angled triangle shape.
+5. Program exits after displaying the pattern or error message.

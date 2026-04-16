@@ -27,14 +27,12 @@ int main() {
 
     int oldA = a;
 
-    // ndryshim permes pointer-it
     *pA = *pA + 10;
 
     printf("\n--- Pas ndryshimit ---\n");
     printf("a para: %d\n", oldA);
     printf("a pas: %d\n", a);
 
-    // kontrolli me if/else
     if (a > oldA) {
         printf("Vlera eshte rritur\n");
     } else if (a < oldA) {

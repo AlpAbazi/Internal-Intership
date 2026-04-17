@@ -17,7 +17,8 @@ int main(){
         printf("1. Add Student\n");
         printf("2. Show Students\n");
         printf("3. Edit Students Status\n");
-        printf("4. Exit\n");
+        printf("4. Show Report\n"); 
+        printf("5. Exit\n");       
         printf("Enter Choice: ");
         scanf("%d", &choice);
 
@@ -83,8 +84,15 @@ int main(){
                 }
                 break;
 
+
             case 3:
-                int id, found = 0;
+            {
+                int id, found = 0; 
+
+                if (count == 0) {
+                    printf("\nNo students to edit\n");
+                    break;
+                }
 
                 printf("\n===== STUDENT LIST =====\n");
 
@@ -154,9 +162,58 @@ int main(){
                 if (!found) {
                     printf("Student not found!\n");
                 }
-            break;
+
+                break;
+            }
+
 
             case 4:
+            {
+                if (count == 0) {
+                    printf("\nNo data available for report!\n");
+                    break;
+                }
+
+                int completed = 0;
+                float sum = 0;
+                float max = progress[0];
+                float min = progress[0];
+
+                for (int i = 0; i < count; i++) {   
+                    sum += progress[i];
+
+                    if (progress[i] > max)
+                        max = progress[i];       
+
+                    if (progress[i] < min)
+                        min = progress[i];        
+
+                    if (status[i] == COMPLETED)
+                        completed++;              
+                }
+
+                float avg = sum / count;          
+
+                printf("\n===== REPORT =====\n");
+                printf("Total students: %d\n", count);
+                printf("Completed: %d\n", completed);
+                printf("Average progress: %.2f\n", avg);
+                printf("Highest progress: %.2f\n", max);
+                printf("Lowest progress: %.2f\n", min);
+
+                if (avg >= 80)
+                    printf("Class Performance: Excellent\n");
+                else if (avg >= 50)
+                    printf("Class Performance: Good\n");
+                else
+                    printf("Class Performance: Weak\n");
+
+                printf("=====================\n");
+                break;
+            }
+
+
+            case 5:
                 printf("Exiting...\n");
                 break;
 
@@ -164,7 +221,7 @@ int main(){
                 printf("Invalid choice! Try again.\n");
         }
 
-    } while (choice != 4);
+    } while (choice != 5);
 
     return 0;
 }

@@ -35,6 +35,11 @@ int main(){
 
             float *p = &progress[count];
 
+            if (*p < 0 || *p > 100) {
+                printf("Invalid progress! Must be 0-100.\n");
+                break;
+            }
+
             if (*p == 0)
                 status[count] = NOT_STARTED;
             else if (*p < 100)
@@ -43,9 +48,11 @@ int main(){
                 status[count] = COMPLETED;
 
             count++;
-                printf("Student added!\n");
-                break;
 
+            printf("Student added successfully!\n");
+            printf("Total: %d/%d\n", count, MAX);
+            break;
+                
 
             case 2:
                 if (count == 0) {

@@ -1,0 +1,29 @@
+Kërkesa 1 - Mini-Projekt
+
+Fokusi
+
+Zgjerimi i projektit nga trajtimi i një rasti fillestar në menaxhimin e disa regjistrimeve të ruajtura në mënyrë të organizuar.
+
+Kërkesa e re
+
+Zgjeroni versionin bazë të projektit në mënyrë që programi të mos punojë më vetëm me një regjistrim të vetëm, por me disa regjistrime brenda të njëjtit ekzekutim.
+
+Çfarë duhet të shtoni tani
+
+• Përcaktoni një mënyrë të qartë dhe të qëndrueshme për të ruajtur disa regjistrime të ndryshme të progresit.
+
+• Përdorni një array me madhësi fikse si kufi maksimal të programit.
+
+• Nga menuja, lejoni shtimin e disa regjistrimeve njëra pas tjetrës, jo vetëm një hyrje të vetme.
+
+• Shtoni një opsion që shfaq të gjitha regjistrimet e ruajtura në format të lexueshëm dhe të rregullt.
+
+• Parandaloni shtimin e regjistrimeve të reja kur arrihet maksimumi i lejuar dhe shfaqni mesazh të qartë.
+
+• Mbani të ndarë qartë numrin aktual të regjistrimeve nga kapaciteti maksimal i programit.
+
+Kujdes gjatë zbatimit
+
+• Mos e thjeshtoni projektin në variabla të palidhura; ruani organizimin e të dhënave që të mund të zgjerohet më tej.
+
+• Programi duhet të vazhdojë të funksionojë saktë edhe pas disa shtimeve radhazi dhe pas tentativës për të kaluar kufirin maksimal.

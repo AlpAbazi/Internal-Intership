@@ -28,9 +28,10 @@ public class MiniProject {
             System.out.println("1. Add Student");
             System.out.println("2. View Students");
             System.out.println("3. Update Status");
-            System.out.println("4. Exit");
+            System.out.println("4. Generate Report");
+            System.out.println("5. Exit");
             System.out.print("Choose: ");
-            int choice = getValidInt(1, 4);
+            int choice = getValidInt(1, 5);
             switch (choice) {
                 case 1:
                     addStudent();
@@ -42,6 +43,9 @@ public class MiniProject {
                     updateStatus();
                     break;
                 case 4:
+                    generateReport();
+                    break;
+                case 5:
                     System.exit(0);
             }
         }
@@ -116,5 +120,52 @@ public class MiniProject {
         };
         student.status = status;
         System.out.println("Status updated.");
+    }
+
+    static void generateReport() {
+        if (students.isEmpty()) {
+            System.out.println("No students registered yet.");
+            return;
+        }
+        int total = students.size();
+        int active = 0;
+        int inactive = 0;
+        int graduated = 0;
+        int maxId = Integer.MIN_VALUE;
+        int minId = Integer.MAX_VALUE;
+        for (Student s : students) {
+            if (s.status == Status.ACTIVE) active++;
+            else if (s.status == Status.INACTIVE) inactive++;
+            else if (s.status == Status.GRADUATED) graduated++;
+            if (s.id > maxId) maxId = s.id;
+            if (s.id < minId) minId = s.id;
+        }
+        System.out.println("=== Student Registration Report ===");
+        System.out.println("Total Registrations: " + total);
+        System.out.println("Active Students: " + active);
+        System.out.println("Inactive Students: " + inactive);
+        System.out.println("Graduated Students: " + graduated);
+        System.out.println("Highest ID: " + maxId);
+        System.out.println("Lowest ID: " + minId);
+        // Classification for class size
+        String classSize;
+        if (total < 5) classSize = "Small class (fewer than 5 students)";
+        else if (total < 15) classSize = "Medium class (5-14 students)";
+        else classSize = "Large class (15 or more students)";
+        System.out.println("Class Size Classification: " + classSize);
+        // Graduation rate
+        double gradRate = (double) graduated / total * 100;
+        String graduationRate;
+        if (gradRate < 30) graduationRate = "Low graduation rate (needs improvement)";
+        else if (gradRate < 70) graduationRate = "Moderate graduation rate (acceptable)";
+        else graduationRate = "High graduation rate (excellent)";
+        System.out.println("Graduation Rate: " + String.format("%.2f", gradRate) + "% - " + graduationRate);
+        // Activity level
+        double activeRate = (double) active / total * 100;
+        String activity;
+        if (activeRate > 80) activity = "Highly active (most students engaged)";
+        else if (activeRate > 50) activity = "Moderately active (half engaged)";
+        else activity = "Low activity (needs more engagement)";
+        System.out.println("Activity Level: " + String.format("%.2f", activeRate) + "% - " + activity);
     }
 }

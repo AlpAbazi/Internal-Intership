@@ -10,6 +10,7 @@ typedef enum {
 } Status;
 
 struct Student {
+    int id;
     char name[50];
     float grade;
     Status status;
@@ -24,54 +25,42 @@ const char* statusToString(Status s) {
     }
 }
 
-// funksion për raport
-void raport(struct Student students[], int count) {
+// kërkimi
+void search(struct Student students[], int count, int id) {
 
-    if(count == 0) {
-        printf("\nNuk ka te dhena per raport.\n");
-        return;
-    }
-
-    int completed = 0;
-    float sum = 0;
-    float max = students[0].grade;
-    float min = students[0].grade;
+    int found = 0;
 
     for(int i = 0; i < count; i++) {
+        if(students[i].id == id) {
 
-        sum += students[i].grade;
+            found = 1;
 
-        if(students[i].status == PERFUNDUAR) {
-            completed++;
-        }
+            printf("\n--- REZULTATI U GJET ---\n");
+            printf("ID: %d\n", students[i].id);
+            printf("Emri: %s\n", students[i].name);
+            printf("Nota: %.2f\n", students[i].grade);
+            printf("Status: %s\n", statusToString(students[i].status));
 
-        if(students[i].grade > max) {
-            max = students[i].grade;
-        }
+            // logjikë paralajmëruese
+            printf("\n--- ANALIZA ---\n");
 
-        if(students[i].grade < min) {
-            min = students[i].grade;
+            if(students[i].grade >= 9 && students[i].status == PERFUNDUAR) {
+                printf("Shume mire. Performanca shume e larte.\n");
+            } 
+            else if(students[i].grade >= 7 && students[i].status == NE_PROGRES) {
+                printf("Mire, por duhet me e perfundu punen.\n");
+            } 
+            else if(students[i].grade < 6) {
+                printf("Paralajmerim: rezultat i dobet.\n");
+            } 
+            else {
+                printf("Gjendje normale.\n");
+            }
         }
     }
 
-    float avg = sum / count;
-
-    printf("\n--- RAPORT ---\n");
-    printf("Totali i regjistrimeve: %d\n", count);
-    printf("Te perfunduara: %d\n", completed);
-    printf("Mesatarja: %.2f\n", avg);
-    printf("Nota me e larte: %.2f\n", max);
-    printf("Nota me e ulet: %.2f\n", min);
-
-    // klasifikim
-    if(avg >= 9) {
-        printf("Vleresim: Shume mire\n");
-    } else if(avg >= 7) {
-        printf("Vleresim: Mire\n");
-    } else if(avg >= 5) {
-        printf("Vleresim: Mesatare\n");
-    } else {
-        printf("Vleresim: Dobet\n");
+    if(!found) {
+        printf("\nNuk u gjet asnje regjistrim me kete ID.\n");
     }
 }
 
@@ -84,8 +73,8 @@ int main() {
     do {
         printf("\n--- MENU ---\n");
         printf("1. Shto regjistrim\n");
-        printf("2. Shfaq regjistrimet\n");
-        printf("3. Raport analitik\n");
+        printf("2. Shfaq te gjitha\n");
+        printf("3. Kerko sipas ID\n");
         printf("0. Dil\n");
         printf("Zgjedhja: ");
 
@@ -95,8 +84,6 @@ int main() {
             continue;
         }
 
-        getchar();
-
         switch(choice) {
 
             case 1:
@@ -105,51 +92,42 @@ int main() {
                     break;
                 }
 
+                printf("ID: ");
+                scanf("%d", &students[count].id);
+
                 printf("Emri: ");
+                getchar();
                 fgets(students[count].name, 50, stdin);
                 students[count].name[strcspn(students[count].name, "\n")] = 0;
 
                 printf("Nota: ");
-                if(scanf("%f", &students[count].grade) != 1) {
-                    printf("Nota e pavlefshme.\n");
-                    while(getchar() != '\n');
-                    break;
-                }
+                scanf("%f", &students[count].grade);
 
-                int statusChoice;
+                int st;
 
-                printf("Zgjedh statusin:\n");
-                printf("1. Aktiv\n2. Ne progres\n3. Perfunduar\n");
-                printf("Zgjedhja: ");
+                printf("Status (1-Aktiv,2-Ne progres,3-Perfunduar): ");
+                scanf("%d", &st);
 
-                if(scanf("%d", &statusChoice) != 1) {
-                    printf("Status i pavlefshem.\n");
-                    while(getchar() != '\n');
-                    break;
-                }
-
-                switch(statusChoice) {
+                switch(st) {
                     case 1: students[count].status = AKTIV; break;
                     case 2: students[count].status = NE_PROGRES; break;
                     case 3: students[count].status = PERFUNDUAR; break;
                     default:
-                        printf("Status i pavlefshem.\n");
-                        break;
+                        printf("Status i pavlefshem, vendoset default.\n");
+                        students[count].status = AKTIV;
                 }
 
                 count++;
                 printf("Regjistrimi u shtua.\n");
-                getchar();
                 break;
 
             case 2:
                 if(count == 0) {
                     printf("Nuk ka regjistrime.\n");
                 } else {
-                    printf("\n--- LISTA ---\n");
                     for(int i = 0; i < count; i++) {
-                        printf("%d. %s | %.2f | %s\n",
-                               i + 1,
+                        printf("%d | %s | %.2f | %s\n",
+                               students[i].id,
                                students[i].name,
                                students[i].grade,
                                statusToString(students[i].status));
@@ -158,7 +136,12 @@ int main() {
                 break;
 
             case 3:
-                raport(students, count);
+                {
+                    int id;
+                    printf("Shkruaj ID per kerkim: ");
+                    scanf("%d", &id);
+                    search(students, count, id);
+                }
                 break;
 
             case 0:

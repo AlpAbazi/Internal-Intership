@@ -3,14 +3,14 @@
 
 #define MAX 100
 
-// ENUM per status
+// ENUM
 typedef enum {
     NEW = 1,
     IN_PROGRESS,
     COMPLETED
 } Status;
 
-// Struktura
+// STRUCT
 struct Student {
     int id;
     char name[50];
@@ -21,12 +21,7 @@ struct Student {
 struct Student students[MAX];
 int count = 0;
 
-// ================= POINTER FUNCTION =================
-void updateGrade(struct Student *s, float newGrade) {
-    s->grade = newGrade;
-}
-
-// ================= ADD =================
+// ADD
 void addStudent() {
     if (count >= MAX) {
         printf("Kapaciteti maksimal u arrit!\n");
@@ -54,26 +49,36 @@ void addStudent() {
     students[count].status = st;
     count++;
 
-    printf("Studenti u shtua me sukses!\n");
+    printf("Studenti u shtua!\n");
 }
 
-// ================= SHOW =================
+// SHOW
 void showStudents() {
     if (count == 0) {
         printf("Nuk ka te dhena!\n");
         return;
     }
 
+    printf("\n--- LISTA E STUDENTEVE ---\n");
+
     for (int i = 0; i < count; i++) {
-        printf("%d | %s | %.2f | %d\n",
-            students[i].id,
-            students[i].name,
-            students[i].grade,
-            students[i].status);
+        char *statusText;
+
+        switch (students[i].status) {
+            case NEW: statusText = "NEW"; break;
+            case IN_PROGRESS: statusText = "IN_PROGRESS"; break;
+            case COMPLETED: statusText = "COMPLETED"; break;
+        }
+
+        printf("%d | %s | %.2f | %s\n",
+               students[i].id,
+               students[i].name,
+               students[i].grade,
+               statusText);
     }
 }
 
-// ================= REPORT =================
+// REPORT
 void report() {
     if (count == 0) {
         printf("Nuk ka te dhena per raport!\n");
@@ -81,77 +86,68 @@ void report() {
     }
 
     float sum = 0, max = students[0].grade, min = students[0].grade;
-    int completed = 0;
 
     for (int i = 0; i < count; i++) {
         sum += students[i].grade;
 
         if (students[i].grade > max) max = students[i].grade;
         if (students[i].grade < min) min = students[i].grade;
-
-        if (students[i].status == COMPLETED) completed++;
     }
 
+    float avg = sum / count;
+
     printf("\n--- RAPORT ---\n");
-    printf("Totali: %d\n", count);
-    printf("Mesatarja: %.2f\n", sum / count);
+    printf("Total: %d\n", count);
+    printf("Mesatarja: %.2f\n", avg);
     printf("Max: %.2f\n", max);
     printf("Min: %.2f\n", min);
-    printf("Completed: %d\n", completed);
 
-    if (sum / count >= 9)
-        printf("Performanca: Shume e mire\n");
-    else if (sum / count >= 7)
-        printf("Performanca: Mesatare\n");
+    if (avg >= 9)
+        printf("Performancë shumë e mirë\n");
+    else if (avg >= 7)
+        printf("Performancë mesatare\n");
     else
-        printf("Performanca: Dobet\n");
+        printf("Performancë e dobët\n");
 }
 
-// ================= SEARCH =================
+// SEARCH
 void searchStudent() {
     int id;
     printf("Shkruaj ID: ");
     scanf("%d", &id);
 
-    int found = 0;
-
     for (int i = 0; i < count; i++) {
         if (students[i].id == id) {
-            printf("U gjet: %s | %.2f\n", students[i].name, students[i].grade);
+            printf("U gjet: %s | %.2f\n",
+                   students[i].name,
+                   students[i].grade);
 
-            // LOGJIKA ME IF/ELSE (paralajmerim)
             if (students[i].grade < 6)
-                printf("Paralajmerim: Nota shume e ulet!\n");
-            else if (students[i].grade < 8)
-                printf("Ne rregull por mund te permiresohet\n");
+                printf("Paralajmerim: Nota e ulet!\n");
             else
-                printf("Shkelqyeshem!\n");
+                printf("Rezultat i mire\n");
 
-            found = 1;
+            return;
         }
     }
 
-    if (!found)
-        printf("Nuk u gjet asnje student!\n");
+    printf("Nuk u gjet!\n");
 }
 
-// ================= POINTER UPDATE =================
-void changeGrade() {
+// POINTER UPDATE
+void updateGrade() {
     int id;
-    printf("Shkruaj ID per ndryshim: ");
+    printf("ID per ndryshim note: ");
     scanf("%d", &id);
 
     for (int i = 0; i < count; i++) {
         if (students[i].id == id) {
+            float *p = &students[i].grade;
 
-            float newGrade;
             printf("Nota e re: ");
-            scanf("%f", &newGrade);
+            scanf("%f", p);
 
-            // POINTER CALL
-            updateGrade(&students[i], newGrade);
-
-            printf("Nota u ndryshua me sukses!\n");
+            printf("Nota u ndryshua me pointer!\n");
             return;
         }
     }
@@ -159,17 +155,94 @@ void changeGrade() {
     printf("Studenti nuk u gjet!\n");
 }
 
-// ================= MENU =================
+// SORT
+void sortStudents() {
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (students[i].grade < students[j].grade) {
+                struct Student temp = students[i];
+                students[i] = students[j];
+                students[j] = temp;
+            }
+        }
+    }
+
+    printf("U renditen studentet!\n");
+}
+
+// UPDATE
+void updateStudent() {
+    int id;
+    printf("ID per update: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+
+            printf("Emri i ri: ");
+            scanf("%s", students[i].name);
+
+            int st;
+            printf("Status i ri (1-3): ");
+            scanf("%d", &st);
+
+            if (st < 1 || st > 3) {
+                printf("Status gabim!\n");
+                return;
+            }
+
+            students[i].status = st;
+
+            printf("U perditesua!\n");
+            return;
+        }
+    }
+
+    printf("Nuk u gjet!\n");
+}
+
+// DELETE
+void deleteStudent() {
+    int id;
+    printf("ID per fshirje: ");
+    scanf("%d", &id);
+
+    int found = -1;
+
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            found = i;
+            break;
+        }
+    }
+
+    if (found == -1) {
+        printf("Nuk u gjet!\n");
+        return;
+    }
+
+    for (int i = found; i < count - 1; i++) {
+        students[i] = students[i + 1];
+    }
+
+    count--;
+    printf("U fshi studenti!\n");
+}
+
+// MAIN
 int main() {
     int choice;
 
     do {
         printf("\n--- MENU ---\n");
-        printf("1. Shto student\n");
-        printf("2. Shfaq studentet\n");
-        printf("3. Raport\n");
-        printf("4. Kerko student\n");
-        printf("5. Ndrysho noten (pointer)\n");
+        printf("1. Add\n");
+        printf("2. Show\n");
+        printf("3. Report\n");
+        printf("4. Search\n");
+        printf("5. Update grade (pointer)\n");
+        printf("6. Sort\n");
+        printf("7. Update student\n");
+        printf("8. Delete student\n");
         printf("0. Exit\n");
 
         printf("Zgjedhja: ");
@@ -180,7 +253,10 @@ int main() {
             case 2: showStudents(); break;
             case 3: report(); break;
             case 4: searchStudent(); break;
-            case 5: changeGrade(); break;
+            case 5: updateGrade(); break;
+            case 6: sortStudents(); break;
+            case 7: updateStudent(); break;
+            case 8: deleteStudent(); break;
             case 0: printf("Dalje...\n"); break;
             default: printf("Zgjedhje e pavlefshme!\n");
         }

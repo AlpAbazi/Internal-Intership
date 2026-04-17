@@ -20,6 +20,7 @@ PatternType readPatternChoice(void);
 int readPatternSize(void);
 void displayRecords(const PatternRecord records[], int count);
 void updateRecord(PatternRecord *record);
+void deleteRecord(PatternRecord records[], int *count);
 void sortRecordsByTypeAndSize(PatternRecord records[], int count);
 void displayRankedRecords(const PatternRecord records[], int count);
 
@@ -108,7 +109,58 @@ void updateRecord(PatternRecord *record) {
     record->choice = newChoice;
     record->size = newSize;
 
-    printf("Record updated successfully.\n");
+    printf("✓ Record updated successfully.\n");
+}
+
+void deleteRecord(PatternRecord records[], int *count) {
+    if (*count == 0) {
+        printf("⚠ No records to delete.\n");
+        return;
+    }
+
+    printf("\n📍 Current records:\n");
+    for (int i = 0; i < *count; i++) {
+        printf("  [%d] Pattern: %s, Size: %d\n", 
+               i + 1, 
+               records[i].choice == STARS ? "STARS" : "NUMBERS", 
+               records[i].size);
+    }
+
+    printf("\nEnter record number to delete (1-%d): ", *count);
+    int recordNum;
+    if (scanf("%d", &recordNum) != 1) {
+        printf("❌ Invalid input. Please enter a number.\n");
+        while (getchar() != '\n'); // clear input buffer
+        return;
+    }
+
+    if (recordNum < 1 || recordNum > *count) {
+        printf("❌ Invalid record number. Please choose between 1 and %d.\n", *count);
+        return;
+    }
+
+    // Confirm deletion
+    printf("\n⚠️  Are you sure you want to delete record %d?\n", recordNum);
+    printf("  Pattern: %s, Size: %d\n", 
+           records[recordNum - 1].choice == STARS ? "STARS" : "NUMBERS",
+           records[recordNum - 1].size);
+    printf("Confirm deletion? (1=Yes, 0=No): ");
+    int confirm;
+    if (scanf("%d", &confirm) != 1 || confirm != 1) {
+        printf("❌ Deletion cancelled.\n");
+        while (getchar() != '\n'); // clear input buffer
+        return;
+    }
+
+    // Shift records: move all records after the deleted one forward
+    for (int i = recordNum - 1; i < *count - 1; i++) {
+        records[i] = records[i + 1];
+    }
+
+    // Decrease count
+    (*count)--;
+
+    printf("✓ Record deleted successfully. Remaining records: %d/%d.\n", *count, MAX_RECORDS);
 }
 
 void sortRecordsByTypeAndSize(PatternRecord records[], int count) {
@@ -195,9 +247,10 @@ int main(void) {
         printf("│  2. Show all records                    │\n");
         printf("│  3. Update record                       │\n");
         printf("│  4. View ranked records (sorted)        │\n");
-        printf("│  5. Exit                                │\n");
+        printf("│  5. Delete record                       │\n");
+        printf("│  6. Exit                                │\n");
         printf("└─────────────────────────────────────────┘\n");
-        printf("Choose an option (1-5): ");
+        printf("Choose an option (1-6): ");
         scanf("%d", &option);
 
         switch (option) {
@@ -254,15 +307,20 @@ int main(void) {
                 break;
 
             case 5:
+                printf("\n�️  Deleting record...\n");
+                deleteRecord(records, &recordCount);
+                break;
+
+            case 6:
                 printf("\n👋 Thank you for using Pattern Manager!\n");
                 printf("   Exiting program...\n\n");
                 break;
 
             default:
-                printf("\n❌ Invalid option. Please choose 1-5.\n");
+                printf("\n❌ Invalid option. Please choose 1-6.\n");
                 break;
         }
-    } while (option != 5);
+    } while (option != 6);
 
     return 0;
 }

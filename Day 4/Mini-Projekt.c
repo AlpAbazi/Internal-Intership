@@ -76,6 +76,45 @@ void searchStudent(int ids[], float progress[], enum Status status[], int count)
     }
 }
 
+void showRanking(int ids[], float progress[], int count) {
+    if (count == 0) {
+        printf("No students available!\n");
+        return;
+    }
+
+    int sortedIDs[MAX];
+    float sortedProgress[MAX];
+
+    for (int i = 0; i < count; i++) {
+        sortedIDs[i] = ids[i];
+        sortedProgress[i] = progress[i];
+    }
+
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (sortedProgress[i] < sortedProgress[j]) {
+
+                float tempP = sortedProgress[i];
+                sortedProgress[i] = sortedProgress[j];
+                sortedProgress[j] = tempP;
+
+                int tempID = sortedIDs[i];
+                sortedIDs[i] = sortedIDs[j];
+                sortedIDs[j] = tempID;
+            }
+        }
+    }
+
+    printf("\n===== RANKING (BY PROGRESS) =====\n");
+
+    for (int i = 0; i < count; i++) {
+        printf("%d. ID: %d | Progress: %.2f%%\n",
+               i + 1, sortedIDs[i], sortedProgress[i]);
+    }
+
+    printf("=================================\n");
+}
+
 int main(){
     int ids[MAX];
     float progress[MAX];
@@ -91,7 +130,8 @@ int main(){
         printf("3. Edit Student Status\n");
         printf("4. Show Report\n");
         printf("5. Search Student\n");
-        printf("6. Exit\n");
+        printf("6. Show Ranking\n");
+        printf("7. Exit\n");
         printf("Enter Choice: ");
 
         if (scanf("%d", &choice) != 1) { 
@@ -124,11 +164,9 @@ int main(){
                     break;
                 }
 
-                float *p = &progress[count];
-
-                if (*p == 0)
+                if (progress[count] == 0)
                     status[count] = NOT_STARTED;
-                else if (*p < 100)
+                else if (progress[count] < 100)
                     status[count] = IN_PROGRESS;
                 else
                     status[count] = COMPLETED;
@@ -137,7 +175,6 @@ int main(){
 
                 printf("Student added successfully!\n");
                 break;
-
 
             case 2:
                 if (count == 0) {
@@ -165,7 +202,6 @@ int main(){
                     }
                 }
                 break;
-
 
             case 3:
             {
@@ -217,7 +253,6 @@ int main(){
                 break;
             }
 
-
             case 4:
             {
                 if (count == 0) {
@@ -268,6 +303,10 @@ int main(){
                 break;
 
             case 6:
+                showRanking(ids, progress, count);
+                break;
+
+            case 7:
                 printf("Exiting...\n");
                 break;
 
@@ -275,7 +314,7 @@ int main(){
                 printf("Invalid choice!\n");
         }
 
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }

@@ -202,6 +202,147 @@ void displayAllRecords(StudentRecord students[], int count) {
     }
 }
 
+int findStudentIndexById(StudentRecord students[], int count, int id) {
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int selectStudentIndex(StudentRecord students[], int count) {
+    if (count == 0) {
+        printf("\nNuk ka regjistrime të disponueshme. Shtoni së paku një regjistrim.\n");
+        return -1;
+    }
+
+    int selection;
+    printf("\nZgjidhni mënyrën e identifikimit të regjistrimit:\n");
+    printf("1. Sipas ID-së\n");
+    printf("2. Sipas numrit të listuar\n");
+
+    if (!readInt("Zgjedhja juaj: ", &selection)) {
+        return -1;
+    }
+
+    if (selection == 1) {
+        int id;
+        if (!readInt("Vendosni ID-në e regjistrimit: ", &id)) {
+            return -1;
+        }
+
+        int index = findStudentIndexById(students, count, id);
+        if (index < 0) {
+            printf("Nuk u gjet regjistrimi me ID %d.\n", id);
+            return -1;
+        }
+
+        return index;
+    }
+
+    if (selection == 2) {
+        displayAllRecords(students, count);
+        if (!readInt("Vendosni numrin e regjistrimit nga lista: ", &selection)) {
+            return -1;
+        }
+
+        if (selection < 1 || selection > count) {
+            printf("Numër i pavlefshëm. Provoni përsëri.\n");
+            return -1;
+        }
+
+        return selection - 1;
+    }
+
+    printf("Opsion i pavlefshëm. Provoni përsëri.\n");
+    return -1;
+}
+
+void editStudentRecord(StudentRecord students[], int count) {
+    int index = selectStudentIndex(students, count);
+    if (index < 0) {
+        return;
+    }
+
+    StudentRecord *student = &students[index];
+    int choice;
+
+    while (1) {
+        printf("\n=== Ndrysho regjistrimin ID %d (%s) ===\n", student->id, student->name);
+        printf("1. Ndrysho emrin\n");
+        printf("2. Ndrysho progresin\n");
+        printf("3. Ndrysho kategorinë\n");
+        printf("4. Ruaj dhe kthehu\n");
+
+        if (!readInt("Zgjedhja juaj: ", &choice)) {
+            continue;
+        }
+
+        if (choice == 1) {
+            printf("Vendos emrin e ri: ");
+            fgets(student->name, NAME_LENGTH, stdin);
+            student->name[strcspn(student->name, "\n")] = '\0';
+            if (strlen(student->name) == 0) {
+                printf("Emri nuk mund të jetë bosh.\n");
+                continue;
+            }
+            printf("Emri u ndryshua në: %s\n", student->name);
+            continue;
+        }
+
+        if (choice == 2) {
+            float newProgress;
+            if (!readFloat("Vendos progresin e ri (0 - 100): ", &newProgress)) {
+                continue;
+            }
+            if (newProgress < 0 || newProgress > 100) {
+                printf("Progresi duhet të jetë nga 0 deri në 100.\n");
+                continue;
+            }
+            student->progress = newProgress;
+            updateStatusByProgress(student);
+            printf("Progresi u ndryshua në %.2f%%. Statusi i ri: %s\n", student->progress, statusToString(student->status));
+            continue;
+        }
+
+        if (choice == 3) {
+            student->category = selectCategory();
+            printf("Kategoria u ndryshua në: %s\n", categoryToString(student->category));
+            continue;
+        }
+
+        if (choice == 4) {
+            printf("Ndryshimet janë ruajtur për regjistrimin me ID %d.\n", student->id);
+            break;
+        }
+
+        printf("Opsion i pavlefshëm. Provoni përsëri.\n");
+    }
+}
+
+void deleteStudentRecord(StudentRecord students[], int *count) {
+    if (*count == 0) {
+        printf("\nNuk ka regjistrime për të fshirë.\n");
+        return;
+    }
+
+    int index = selectStudentIndex(students, *count);
+    if (index < 0) {
+        return;
+    }
+
+    printf("\nRegjistrimi që do të fshihet është:\n");
+    printf("ID: %d | Emri: %s | Progresi: %.2f%% | Kategoria: %s\n", students[index].id, students[index].name, students[index].progress, categoryToString(students[index].category));
+
+    for (int i = index; i < *count - 1; i++) {
+        students[i] = students[i + 1];
+    }
+
+    (*count)--;
+    printf("Regjistrimi u fshi me sukses. Numri i regjistrimeve tani është %d.\n", *count);
+}
+
 void displayRankedRecordsByProgress(StudentRecord students[], int count) {
     if (count == 0) {
         printf("\nNuk ka regjistrime për të renditur. Shtoni së paku një regjistrim.\n");
@@ -443,11 +584,13 @@ int main(void) {
         printf("\n===== STUDENT PROGRESS TRACKER =====\n");
         printf("1. Shto regjistrim\n");
         printf("2. Shfaq të gjitha regjistrimet\n");
-        printf("3. Perditeso progresin e nje regjistrimi\n");
-        printf("4. Kërko regjistrim\n");
-        printf("5. Rendit / Ranko regjistrimet sipas progresit\n");
-        printf("6. Raport analitik\n");
-        printf("7. Dil\n");
+        printf("3. Ndrysho regjistrimin\n");
+        printf("4. Fshi regjistrimin\n");
+        printf("5. Perditeso progresin e nje regjistrimi\n");
+        printf("6. Kërko regjistrim\n");
+        printf("7. Rendit / Ranko regjistrimet sipas progresit\n");
+        printf("8. Raport analitik\n");
+        printf("9. Dil\n");
 
         if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;
@@ -460,7 +603,13 @@ int main(void) {
             case 2:
                 displayAllRecords(students, count);
                 break;
-            case 3: {
+            case 3:
+                editStudentRecord(students, count);
+                break;
+            case 4:
+                deleteStudentRecord(students, &count);
+                break;
+            case 5: {
                 int targetId;
                 float newProgress;
                 if (!readInt("Vendosni ID-në e regjistrimit për përditësim: ", &targetId)) {
@@ -481,16 +630,16 @@ int main(void) {
                 updateStudentProgress(student, newProgress);
                 break;
             }
-            case 4:
+            case 6:
                 searchRecords(students, count);
                 break;
-            case 5:
+            case 7:
                 displayRankedRecordsByProgress(students, count);
                 break;
-            case 6:
+            case 8:
                 printAnalyticsReport(students, count);
                 break;
-            case 7:
+            case 9:
                 printf("Programi po mbyllet...\n");
                 return 0;
             default:

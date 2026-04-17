@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <string.h>
 
 #define MAX_STUDENTS 5
@@ -181,6 +181,75 @@ void displayAllRecords(StudentRecord students[], int count) {
     }
 }
 
+void printAnalyticsReport(StudentRecord students[], int count) {
+    if (count == 0) {
+        printf("\nNuk ka të dhëna për raport. Shtoni së paku një regjistrim për të parë analizën.\n");
+        return;
+    }
+
+    int completedCount = 0;
+    float totalProgress = 0.0f;
+    float minProgress = students[0].progress;
+    float maxProgress = students[0].progress;
+    int categoryCounts[5] = {0};
+
+    for (int i = 0; i < count; i++) {
+        float progress = students[i].progress;
+        totalProgress += progress;
+
+        if (progress < minProgress) {
+            minProgress = progress;
+        }
+
+        if (progress > maxProgress) {
+            maxProgress = progress;
+        }
+
+        if (students[i].status == COMPLETED) {
+            completedCount++;
+        }
+
+        if (students[i].category >= FRESHMAN && students[i].category <= SENIOR) {
+            categoryCounts[students[i].category]++;
+        }
+    }
+
+    float averageProgress = totalProgress / count;
+    const char *classMessage;
+
+    if (averageProgress >= 90.0f) {
+        classMessage = "Rezultati i përgjithshëm është shumë i lartë dhe grupi duket shumë i suksesshëm.";
+    } else if (averageProgress >= 70.0f) {
+        classMessage = "Progresi mesatar është i mirë, por ka vend për përmirësim.";
+    } else if (averageProgress >= 40.0f) {
+        classMessage = "Grupi është në proces përmirësimi; vlerësoni mbështetjen dhe ndjekjen.";
+    } else {
+        classMessage = "Progresi mesatar është i ulët. Duhet të fokusohet më shumë tek përfundimi i detyrave.";
+    }
+
+    printf("\n===== RAPORT ANALITIK =====\n");
+    printf("Numri total i regjistrimeve: %d\n", count);
+    printf("Numri i regjistrimeve të përfunduara: %d\n", completedCount);
+    printf("Progresi mesatar: %.2f%%\n", averageProgress);
+    printf("Progresi më i ulët: %.2f%%\n", minProgress);
+    printf("Progresi më i lartë: %.2f%%\n", maxProgress);
+    printf("\nKlasifikimi: %s\n", classMessage);
+
+    if (completedCount == count) {
+        printf("Të gjitha regjistrimet janë përfunduara.");
+    } else if (completedCount == 0) {
+        printf("Asnjë regjistrim nuk është përfunduar ende.");
+    } else {
+        printf("Ka %d regjistrime të përfunduara dhe %d që janë ende në proces.", completedCount, count - completedCount);
+    }
+
+    printf("\n\nShpërndarja sipas kategorive:\n");
+    printf(" - Freshman: %d\n", categoryCounts[FRESHMAN]);
+    printf(" - Sophomore: %d\n", categoryCounts[SOPHOMORE]);
+    printf(" - Junior: %d\n", categoryCounts[JUNIOR]);
+    printf(" - Senior: %d\n", categoryCounts[SENIOR]);
+}
+
 int main(void) {
     StudentRecord students[MAX_STUDENTS];
     int count = 0;
@@ -190,7 +259,8 @@ int main(void) {
         printf("\n===== STUDENT PROGRESS TRACKER =====\n");
         printf("1. Shto regjistrim\n");
         printf("2. Shfaq të gjitha regjistrimet\n");
-        printf("3. Dil\n");
+        printf("3. Raport analitik\n");
+        printf("4. Dil\n");
 
         if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;
@@ -204,6 +274,9 @@ int main(void) {
                 displayAllRecords(students, count);
                 break;
             case 3:
+                printAnalyticsReport(students, count);
+                break;
+            case 4:
                 printf("Programi po mbyllet...\n");
                 return 0;
             default:

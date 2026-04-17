@@ -19,7 +19,7 @@ typedef struct {
 Student students[MAX];
 int count = 0;
 
-// ================= HELPERS =================
+// ================= CHECK =================
 int isEmpty() {
     if (count == 0) {
         printf("Nuk ka te dhena!\n");
@@ -28,6 +28,7 @@ int isEmpty() {
     return 0;
 }
 
+// ================= MENU =================
 void printMenu() {
     printf("\n============================\n");
     printf("1. Shto student\n");
@@ -57,8 +58,8 @@ void addStudent() {
     printf("Nota: ");
     scanf("%f", &students[count].grade);
 
-    printf("Status (1-InProgress, 2-Completed, 3-Failed): ");
     int s;
+    printf("Status (1-InProgress, 2-Completed, 3-Failed): ");
     scanf("%d", &s);
 
     if (s < 1 || s > 3) {
@@ -66,7 +67,7 @@ void addStudent() {
         return;
     }
 
-    students[count].status = s;
+    students[count].status = (Status)s;
     count++;
 
     printf("U shtua me sukses!\n");
@@ -77,14 +78,24 @@ void showStudents() {
     if (isEmpty()) return;
 
     printf("\nID   Emri        Nota   Status\n");
-    printf("-----------------------------------\n");
+    printf("---------------------------------\n");
 
     for (int i = 0; i < count; i++) {
-        printf("%d   %s        %.2f   %d\n",
+
+        char *statusText;
+
+        switch (students[i].status) {
+            case IN_PROGRESS: statusText = "IN_PROGRESS"; break;
+            case COMPLETED: statusText = "COMPLETED"; break;
+            case FAILED: statusText = "FAILED"; break;
+            default: statusText = "UNKNOWN";
+        }
+
+        printf("%d   %s        %.2f   %s\n",
                students[i].id,
                students[i].name,
                students[i].grade,
-               students[i].status);
+               statusText);
     }
 }
 
@@ -98,14 +109,17 @@ void searchStudent() {
 
     for (int i = 0; i < count; i++) {
         if (students[i].id == id) {
-            printf("U gjet: %s %.2f\n",
-                   students[i].name,
-                   students[i].grade);
 
-            if (students[i].grade < 2.0)
-                printf("Paralajmerim: Nota e ulet!\n");
-            else if (students[i].grade > 4.0)
+            printf("\nU GJET:\n");
+            printf("Emri: %s\n", students[i].name);
+            printf("Nota: %.2f\n", students[i].grade);
+
+            if (students[i].grade < 5)
+                printf("Paralajmerim: rezultat i dobet!\n");
+            else if (students[i].grade >= 9)
                 printf("Shkelqyeshem!\n");
+            else
+                printf("Rezultat normal.\n");
 
             return;
         }
@@ -128,14 +142,16 @@ void updateStudent() {
             printf("Emri i ri: ");
             scanf("%s", students[i].name);
 
-            printf("Status i ri (1-3): ");
             int s;
+            printf("Status i ri (1-3): ");
             scanf("%d", &s);
 
             if (s >= 1 && s <= 3)
-                students[i].status = s;
+                students[i].status = (Status)s;
+            else
+                printf("Status i pavlefshem, nuk u ndryshua!\n");
 
-            printf("U perditesua!\n");
+            printf("U perditesua me sukses!\n");
             return;
         }
     }
@@ -159,7 +175,7 @@ void deleteStudent() {
             }
 
             count--;
-            printf("U fshi!\n");
+            printf("U fshi me sukses!\n");
             return;
         }
     }
@@ -181,27 +197,28 @@ void sortStudents() {
         }
     }
 
-    printf("U renditen!\n");
+    printf("U renditen studentet!\n");
 }
 
 // ================= REPORT =================
 void generateReport() {
     if (isEmpty()) return;
 
-    int completed = 0;
     float sum = 0, max = students[0].grade;
+    int completed = 0;
 
     for (int i = 0; i < count; i++) {
         sum += students[i].grade;
 
-        if (students[i].status == COMPLETED)
-            completed++;
-
         if (students[i].grade > max)
             max = students[i].grade;
+
+        if (students[i].status == COMPLETED)
+            completed++;
     }
 
-    printf("\nTotal: %d\n", count);
+    printf("\n--- RAPORT ---\n");
+    printf("Total: %d\n", count);
     printf("Completed: %d\n", completed);
     printf("Mesatarja: %.2f\n", sum / count);
     printf("Max: %.2f\n", max);
@@ -224,6 +241,8 @@ int main() {
             case 5: deleteStudent(); break;
             case 6: sortStudents(); break;
             case 7: generateReport(); break;
+            case 0: printf("Dalje...\n"); break;
+            default: printf("Zgjedhje e pavlefshme!\n");
         }
 
     } while (choice != 0);

@@ -202,6 +202,43 @@ void displayAllRecords(StudentRecord students[], int count) {
     }
 }
 
+void displayRankedRecordsByProgress(StudentRecord students[], int count) {
+    if (count == 0) {
+        printf("\nNuk ka regjistrime për të renditur. Shtoni së paku një regjistrim.\n");
+        return;
+    }
+
+    StudentRecord sorted[MAX_STUDENTS];
+    memcpy(sorted, students, sizeof(StudentRecord) * count);
+
+    for (int i = 0; i < count - 1; i++) {
+        int bestIndex = i;
+        for (int j = i + 1; j < count; j++) {
+            if (sorted[j].progress > sorted[bestIndex].progress) {
+                bestIndex = j;
+            }
+        }
+        if (bestIndex != i) {
+            StudentRecord temp = sorted[i];
+            sorted[i] = sorted[bestIndex];
+            sorted[bestIndex] = temp;
+        }
+    }
+
+    printf("\n===== RANKIMI I STUDENTËVE SIPAS PROGRESIT =====\n");
+    printf("Bazuar në progresin aktual të ruajtur për secilin regjistrim.\n\n");
+
+    for (int i = 0; i < count; i++) {
+        printf("Rang %d:\n", i + 1);
+        printf("  ID: %d\n", sorted[i].id);
+        printf("  Emri: %s\n", sorted[i].name);
+        printf("  Progresi: %.2f%%\n", sorted[i].progress);
+        printf("  Statusi: %s\n", statusToString(sorted[i].status));
+        printf("  Kategoria: %s\n", categoryToString(sorted[i].category));
+        printf("--------------------------\n");
+    }
+}
+
 void printAnalyticsReport(StudentRecord students[], int count) {
     if (count == 0) {
         printf("\nNuk ka të dhëna për raport. Shtoni së paku një regjistrim për të parë analizën.\n");
@@ -408,8 +445,9 @@ int main(void) {
         printf("2. Shfaq të gjitha regjistrimet\n");
         printf("3. Perditeso progresin e nje regjistrimi\n");
         printf("4. Kërko regjistrim\n");
-        printf("5. Raport analitik\n");
-        printf("6. Dil\n");
+        printf("5. Rendit / Ranko regjistrimet sipas progresit\n");
+        printf("6. Raport analitik\n");
+        printf("7. Dil\n");
 
         if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;
@@ -447,9 +485,12 @@ int main(void) {
                 searchRecords(students, count);
                 break;
             case 5:
-                printAnalyticsReport(students, count);
+                displayRankedRecordsByProgress(students, count);
                 break;
             case 6:
+                printAnalyticsReport(students, count);
+                break;
+            case 7:
                 printf("Programi po mbyllet...\n");
                 return 0;
             default:

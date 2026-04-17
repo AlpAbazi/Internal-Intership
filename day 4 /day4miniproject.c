@@ -54,6 +54,40 @@ int readFloat(const char *prompt, float *value) {
     return 1;
 }
 
+void printDivider(void) {
+    printf("--------------------------\n");
+}
+
+void printSectionTitle(const char *title) {
+    printf("\n===== %s =====\n", title);
+}
+
+void printMainMenu(void) {
+    printSectionTitle("STUDENT PROGRESS TRACKER");
+    printf("1. Shto regjistrim\n");
+    printf("2. Shfaq të gjitha regjistrimet\n");
+    printf("3. Ndrysho regjistrimin\n");
+    printf("4. Fshi regjistrimin\n");
+    printf("5. Perditeso progresin e nje regjistrimi\n");
+    printf("6. Kërko regjistrim\n");
+    printf("7. Rendit / Ranko regjistrimet sipas progresit\n");
+    printf("8. Raport analitik\n");
+    printf("9. Dil\n\n");
+}
+
+const char* statusToString(Status status);
+const char* categoryToString(Category category);
+
+void printStudentSummary(const StudentRecord *student, int index) {
+    printf("Regjistrimi #%d\n", index);
+    printf("ID: %d\n", student->id);
+    printf("Emri: %s\n", student->name);
+    printf("Progresi: %.2f%%\n", student->progress);
+    printf("Statusi: %s\n", statusToString(student->status));
+    printf("Kategoria: %s\n", categoryToString(student->category));
+    printDivider();
+}
+
 const char* statusToString(Status status) {
     switch (status) {
         case NOT_STARTED: return "Not Started";
@@ -366,17 +400,11 @@ void displayRankedRecordsByProgress(StudentRecord students[], int count) {
         }
     }
 
-    printf("\n===== RANKIMI I STUDENTËVE SIPAS PROGRESIT =====\n");
+    printSectionTitle("RANKIMI I STUDENTËVE SIPAS PROGRESIT");
     printf("Bazuar në progresin aktual të ruajtur për secilin regjistrim.\n\n");
 
     for (int i = 0; i < count; i++) {
-        printf("Rang %d:\n", i + 1);
-        printf("  ID: %d\n", sorted[i].id);
-        printf("  Emri: %s\n", sorted[i].name);
-        printf("  Progresi: %.2f%%\n", sorted[i].progress);
-        printf("  Statusi: %s\n", statusToString(sorted[i].status));
-        printf("  Kategoria: %s\n", categoryToString(sorted[i].category));
-        printf("--------------------------\n");
+        printStudentSummary(&sorted[i], i + 1);
     }
 }
 
@@ -385,6 +413,8 @@ void printAnalyticsReport(StudentRecord students[], int count) {
         printf("\nNuk ka të dhëna për raport. Shtoni së paku një regjistrim për të parë analizën.\n");
         return;
     }
+
+    printSectionTitle("RAPORT ANALITIK");
 
     int completedCount = 0;
     float totalProgress = 0.0f;
@@ -477,13 +507,14 @@ const char* buildSearchAdvice(const StudentRecord *student) {
 }
 
 void printRecordWithAdvice(const StudentRecord *student) {
-    printf("\n=== Regjistrimi i gjetur ===\n");
+    printSectionTitle("Regjistrimi i gjetur");
     printf("ID: %d\n", student->id);
     printf("Emri: %s\n", student->name);
     printf("Progresi: %.2f%%\n", student->progress);
     printf("Statusi: %s\n", statusToString(student->status));
     printf("Kategoria: %s\n", categoryToString(student->category));
     printf("Paralajmërimi: %s\n", buildSearchAdvice(student));
+    printDivider();
 }
 
 int stringContainsIgnoreCase(const char *text, const char *pattern) {
@@ -515,16 +546,17 @@ int stringContainsIgnoreCase(const char *text, const char *pattern) {
 
 void searchRecords(StudentRecord students[], int count) {
     if (count == 0) {
-        printf("\nNuk ka regjistrime për të kërkuar. Shtoni së paku një regjistrim.");
+        printf("\nNuk ka regjistrime për të kërkuar. Shtoni së paku një regjistrim.\n");
         return;
     }
 
+    printSectionTitle("KËRKIMI I REGJISTRIMEVE");
     int searchChoice;
     char searchName[NAME_LENGTH];
     int searchId;
     int found = 0;
 
-    printf("\nZgjidhni mënyrën e kërkimit:\n");
+    printf("Zgjidhni mënyrën e kërkimit:\n");
     printf("1. Kërko sipas ID-së\n");
     printf("2. Kërko sipas emrit\n");
 
@@ -581,16 +613,7 @@ int main(void) {
     int choice;
 
     while (1) {
-        printf("\n===== STUDENT PROGRESS TRACKER =====\n");
-        printf("1. Shto regjistrim\n");
-        printf("2. Shfaq të gjitha regjistrimet\n");
-        printf("3. Ndrysho regjistrimin\n");
-        printf("4. Fshi regjistrimin\n");
-        printf("5. Perditeso progresin e nje regjistrimi\n");
-        printf("6. Kërko regjistrim\n");
-        printf("7. Rendit / Ranko regjistrimet sipas progresit\n");
-        printf("8. Raport analitik\n");
-        printf("9. Dil\n");
+        printMainMenu();
 
         if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;

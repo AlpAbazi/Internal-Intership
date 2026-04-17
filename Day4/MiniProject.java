@@ -3,169 +3,282 @@ import java.util.*;
 enum Status {
     ACTIVE,
     INACTIVE,
-    GRADUATED
+    GRADUATED;
+
+    static void printOptions() {
+        System.out.println("1. ACTIVE");
+        System.out.println("2. INACTIVE");
+        System.out.println("3. GRADUATED");
+    }
+
+    static Status fromChoice(int choice) {
+        return switch (choice) {
+            case 1 -> ACTIVE;
+            case 2 -> INACTIVE;
+            case 3 -> GRADUATED;
+            default -> ACTIVE;
+        };
+    }
 }
 
 class Student {
-    String name;
-    int id;
-    Status status;
+    private final String name;
+    private final int id;
+    private Status status;
 
     Student(String name, int id, Status status) {
         this.name = name;
         this.id = id;
         this.status = status;
     }
+
+    int getId() {
+        return id;
+    }
+
+    Status getStatus() {
+        return status;
+    }
+
+    void setStatus(Status status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-25s | %-6d | %-10s", name, id, status);
+    }
 }
 
 public class MiniProject {
-    static List<Student> students = new ArrayList<>();
-    static Scanner scanner = new Scanner(System.in);
+    private static final List<Student> students = new ArrayList<>();
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         while (true) {
-            System.out.println("Main Menu:");
-            System.out.println("1. Add Student");
-            System.out.println("2. View Students");
-            System.out.println("3. Update Status");
-            System.out.println("4. Generate Report");
-            System.out.println("5. Exit");
-            System.out.print("Choose: ");
-            int choice = getValidInt(1, 5);
+            printHeader("Student Registry Mini-Project");
+            printMainMenu();
+            int choice = readInt("Choose an option:", 1, 5);
             switch (choice) {
-                case 1:
-                    addStudent();
-                    break;
-                case 2:
-                    viewStudents();
-                    break;
-                case 3:
-                    updateStatus();
-                    break;
-                case 4:
-                    generateReport();
-                    break;
-                case 5:
-                    System.exit(0);
+                case 1 -> addStudent();
+                case 2 -> viewStudents();
+                case 3 -> updateStatus();
+                case 4 -> generateReport();
+                case 5 -> exitProgram();
+                default -> printError("Unexpected choice. Please try again.");
             }
         }
     }
 
-    static int getValidInt(int min, int max) {
-        while (true) {
-            try {
-                int num = scanner.nextInt();
-                if (num >= min && num <= max) {
-                    return num;
-                } else {
-                    System.out.println("Invalid choice. Please enter between " + min + " and " + max);
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a number.");
-                scanner.next(); // consume invalid input
-            }
-        }
+    private static void printMainMenu() {
+        System.out.println("1. Add Student");
+        System.out.println("2. View Students");
+        System.out.println("3. Update Status");
+        System.out.println("4. Generate Report");
+        System.out.println("5. Exit");
     }
 
-    static void addStudent() {
-        System.out.print("Enter name: ");
-        String name = scanner.next();
-        System.out.print("Enter id: ");
-        int id = scanner.nextInt();
-        System.out.println("Choose status:");
-        System.out.println("1. ACTIVE");
-        System.out.println("2. INACTIVE");
-        System.out.println("3. GRADUATED");
-        int statusChoice = getValidInt(1, 3);
-        Status status = switch (statusChoice) {
-            case 1 -> Status.ACTIVE;
-            case 2 -> Status.INACTIVE;
-            case 3 -> Status.GRADUATED;
-            default -> Status.ACTIVE; // won't happen
-        };
+    private static void addStudent() {
+        printSection("Add Student");
+        String name = readNonEmptyLine("Enter full name:");
+        int id = readUniqueId("Enter student ID:");
+        Status status = selectStatus("Choose initial status:");
         students.add(new Student(name, id, status));
-        System.out.println("Student added.");
+        printSuccess("Student added successfully.");
+        pressEnterToContinue();
     }
 
-    static void viewStudents() {
-        for (Student s : students) {
-            System.out.println("Name: " + s.name + ", ID: " + s.id + ", Status: " + s.status);
-        }
-    }
-
-    static void updateStatus() {
-        System.out.print("Enter student ID to update: ");
-        int id = scanner.nextInt();
-        Student student = null;
-        for (Student s : students) {
-            if (s.id == id) {
-                student = s;
-                break;
+    private static void viewStudents() {
+        printSection("Student List");
+        if (students.isEmpty()) {
+            printInfo("No students registered yet.");
+        } else {
+            System.out.printf("%-25s | %-6s | %-10s%n", "Name", "ID", "Status");
+            System.out.println("---------------------------+--------+------------");
+            for (Student student : students) {
+                System.out.println(student);
             }
         }
-        if (student == null) {
-            System.out.println("Student not found.");
+        pressEnterToContinue();
+    }
+
+    private static void updateStatus() {
+        printSection("Update Student Status");
+        if (students.isEmpty()) {
+            printInfo("No students available to update.");
+            pressEnterToContinue();
             return;
         }
-        System.out.println("Choose new status:");
-        System.out.println("1. ACTIVE");
-        System.out.println("2. INACTIVE");
-        System.out.println("3. GRADUATED");
-        int statusChoice = getValidInt(1, 3);
-        Status status = switch (statusChoice) {
-            case 1 -> Status.ACTIVE;
-            case 2 -> Status.INACTIVE;
-            case 3 -> Status.GRADUATED;
-            default -> Status.ACTIVE;
-        };
-        student.status = status;
-        System.out.println("Status updated.");
+        int id = readInt("Enter student ID to update:", Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Student student = findStudentById(id);
+        if (student == null) {
+            printError("Student not found.");
+        } else {
+            System.out.println("Current student: " + student);
+            Status newStatus = selectStatus("Choose new status:");
+            student.setStatus(newStatus);
+            printSuccess("Status updated for student ID " + id + ".");
+        }
+        pressEnterToContinue();
     }
 
-    static void generateReport() {
+    private static void generateReport() {
+        printSection("Registration Report");
         if (students.isEmpty()) {
-            System.out.println("No students registered yet.");
+            printInfo("No students registered yet.");
+            pressEnterToContinue();
             return;
         }
         int total = students.size();
-        int active = 0;
-        int inactive = 0;
-        int graduated = 0;
-        int maxId = Integer.MIN_VALUE;
-        int minId = Integer.MAX_VALUE;
-        for (Student s : students) {
-            if (s.status == Status.ACTIVE) active++;
-            else if (s.status == Status.INACTIVE) inactive++;
-            else if (s.status == Status.GRADUATED) graduated++;
-            if (s.id > maxId) maxId = s.id;
-            if (s.id < minId) minId = s.id;
+        int active = countByStatus(Status.ACTIVE);
+        int inactive = countByStatus(Status.INACTIVE);
+        int graduated = countByStatus(Status.GRADUATED);
+        int maxId = students.stream().mapToInt(Student::getId).max().orElse(0);
+        int minId = students.stream().mapToInt(Student::getId).min().orElse(0);
+
+        System.out.printf("Total students:          %d%n", total);
+        System.out.printf("Active students:         %d%n", active);
+        System.out.printf("Inactive students:       %d%n", inactive);
+        System.out.printf("Graduated students:      %d%n", graduated);
+        System.out.printf("Student ID range:        %d - %d%n", minId, maxId);
+        System.out.println("------------------------------------------------");
+        System.out.printf("Class size:              %s%n", classifyClassSize(total));
+        System.out.printf("Graduation rate:         %s%%%n", formatPercent((double) graduated / total * 100));
+        System.out.printf("Graduation summary:      %s%n", interpretGraduationRate((double) graduated / total * 100));
+        System.out.printf("Activity rate:           %s%%%n", formatPercent((double) active / total * 100));
+        System.out.printf("Activity summary:        %s%n", interpretActivityLevel((double) active / total * 100));
+        pressEnterToContinue();
+    }
+
+    private static String readNonEmptyLine(String prompt) {
+        while (true) {
+            System.out.print(prompt + " ");
+            String line = scanner.nextLine().trim();
+            if (!line.isEmpty()) {
+                return line;
+            }
+            printError("Input cannot be empty. Please enter a valid value.");
         }
-        System.out.println("=== Student Registration Report ===");
-        System.out.println("Total Registrations: " + total);
-        System.out.println("Active Students: " + active);
-        System.out.println("Inactive Students: " + inactive);
-        System.out.println("Graduated Students: " + graduated);
-        System.out.println("Highest ID: " + maxId);
-        System.out.println("Lowest ID: " + minId);
-        // Classification for class size
-        String classSize;
-        if (total < 5) classSize = "Small class (fewer than 5 students)";
-        else if (total < 15) classSize = "Medium class (5-14 students)";
-        else classSize = "Large class (15 or more students)";
-        System.out.println("Class Size Classification: " + classSize);
-        // Graduation rate
-        double gradRate = (double) graduated / total * 100;
-        String graduationRate;
-        if (gradRate < 30) graduationRate = "Low graduation rate (needs improvement)";
-        else if (gradRate < 70) graduationRate = "Moderate graduation rate (acceptable)";
-        else graduationRate = "High graduation rate (excellent)";
-        System.out.println("Graduation Rate: " + String.format("%.2f", gradRate) + "% - " + graduationRate);
-        // Activity level
-        double activeRate = (double) active / total * 100;
-        String activity;
-        if (activeRate > 80) activity = "Highly active (most students engaged)";
-        else if (activeRate > 50) activity = "Moderately active (half engaged)";
-        else activity = "Low activity (needs more engagement)";
-        System.out.println("Activity Level: " + String.format("%.2f", activeRate) + "% - " + activity);
+    }
+
+    private static int readInt(String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt + " ");
+            String input = scanner.nextLine().trim();
+            try {
+                int value = Integer.parseInt(input);
+                if (value >= min && value <= max) {
+                    return value;
+                }
+                printError("Please enter a number between " + min + " and " + max + ".");
+            } catch (NumberFormatException e) {
+                printError("Invalid input. Please enter a whole number.");
+            }
+        }
+    }
+
+    private static int readUniqueId(String prompt) {
+        while (true) {
+            int id = readInt(prompt, 1, Integer.MAX_VALUE);
+            if (findStudentById(id) == null) {
+                return id;
+            }
+            printError("This ID already exists. Please choose another ID.");
+        }
+    }
+
+    private static Status selectStatus(String prompt) {
+        System.out.println(prompt);
+        Status.printOptions();
+        int choice = readInt("Enter option:", 1, 3);
+        return Status.fromChoice(choice);
+    }
+
+    private static Student findStudentById(int id) {
+        for (Student student : students) {
+            if (student.getId() == id) {
+                return student;
+            }
+        }
+        return null;
+    }
+
+    private static int countByStatus(Status status) {
+        int count = 0;
+        for (Student student : students) {
+            if (student.getStatus() == status) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static String classifyClassSize(int total) {
+        if (total < 5) {
+            return "Small class (fewer than 5 students)";
+        }
+        if (total < 15) {
+            return "Medium class (5-14 students)";
+        }
+        return "Large class (15 or more students)";
+    }
+
+    private static String interpretGraduationRate(double rate) {
+        if (rate < 30) {
+            return "Low graduation rate (needs improvement)";
+        }
+        if (rate < 70) {
+            return "Moderate graduation rate (acceptable)";
+        }
+        return "High graduation rate (excellent)";
+    }
+
+    private static String interpretActivityLevel(double rate) {
+        if (rate > 80) {
+            return "Highly active (most students engaged)";
+        }
+        if (rate > 50) {
+            return "Moderately active (more than half engaged)";
+        }
+        return "Low activity (needs more engagement)";
+    }
+
+    private static String formatPercent(double value) {
+        return String.format(Locale.US, "%.2f", value);
+    }
+
+    private static void printHeader(String title) {
+        System.out.println();
+        System.out.println("================================================");
+        System.out.println("  " + title);
+        System.out.println("================================================");
+    }
+
+    private static void printSection(String title) {
+        System.out.println();
+        System.out.println("---- " + title + " ----");
+    }
+
+    private static void printSuccess(String message) {
+        System.out.println("[SUCCESS] " + message);
+    }
+
+    private static void printError(String message) {
+        System.out.println("[ERROR] " + message);
+    }
+
+    private static void printInfo(String message) {
+        System.out.println("[INFO] " + message);
+    }
+
+    private static void pressEnterToContinue() {
+        System.out.println();
+        System.out.print("Press Enter to continue...");
+        scanner.nextLine();
+    }
+
+    private static void exitProgram() {
+        printInfo("Exiting program. Goodbye!");
+        System.exit(0);
     }
 }

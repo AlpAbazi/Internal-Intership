@@ -30,6 +30,52 @@ void updateStudent(float *progress, enum Status *status) {
     printf("Student updated successfully!\n");
 }
 
+void searchStudent(int ids[], float progress[], enum Status status[], int count) {
+    int id;
+
+    if (count == 0) {
+        printf("No students available!\n");
+        return;
+    }
+
+    printf("\n===== STUDENT IDS =====\n");
+    for (int i = 0; i < count; i++) {
+        printf("ID: %d\n", ids[i]);
+    }
+
+    printf("\nEnter ID to search: ");
+    if (scanf("%d", &id) != 1) {
+        printf("Invalid input!\n");
+        return;
+    }
+
+    int found = 0;
+
+    for (int i = 0; i < count; i++) {
+        if (ids[i] == id) {
+            found = 1;
+
+            printf("\n===== RESULT =====\n");
+            printf("ID: %d\n", ids[i]);
+
+            if (progress[i] < 30 && status[i] == NOT_STARTED)
+                printf("Critical: No progress started!\n");
+            else if (progress[i] < 50 && status[i] == IN_PROGRESS)
+                printf("Warning: Student is behind!\n");
+            else if (progress[i] >= 100 && status[i] == COMPLETED)
+                printf("Excellent: Fully completed!\n");
+            else if (progress[i] >= 80)
+                printf("Good performance, keep going!\n");
+
+            printf("==================\n");
+        }
+    }
+
+    if (!found) {
+        printf("No student found with this ID!\n");
+    }
+}
+
 int main(){
     int ids[MAX];
     float progress[MAX];
@@ -44,7 +90,8 @@ int main(){
         printf("2. Show Students\n");
         printf("3. Edit Student Status\n");
         printf("4. Show Report\n");
-        printf("5. Exit\n");
+        printf("5. Search Student\n");
+        printf("6. Exit\n");
         printf("Enter Choice: ");
 
         if (scanf("%d", &choice) != 1) { 
@@ -216,8 +263,11 @@ int main(){
                 break;
             }
 
-
             case 5:
+                searchStudent(ids, progress, status, count);
+                break;
+
+            case 6:
                 printf("Exiting...\n");
                 break;
 
@@ -225,7 +275,7 @@ int main(){
                 printf("Invalid choice!\n");
         }
 
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }

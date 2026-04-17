@@ -31,6 +31,7 @@ const char* statusToString(Status status) {
     }
 }
 
+
 int chooseStatus(Status *status) {
     int choice;
 

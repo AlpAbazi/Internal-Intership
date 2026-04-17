@@ -250,6 +250,109 @@ void printAnalyticsReport(StudentRecord students[], int count) {
     printf(" - Senior: %d\n", categoryCounts[SENIOR]);
 }
 
+const char* buildSearchAdvice(const StudentRecord *student) {
+    if (student->status == NOT_STARTED && student->progress == 0.0f) {
+        return "Nuk ka filluar ende. Duhet të filloni menjëherë procesin e mësimit.";
+    }
+
+    if (student->status == IN_PROGRESS && student->progress < 30.0f) {
+        return "Progresi është shumë i ulët dhe po ngadalësohet rëndësishëm. Konsideroni mbështetje të shtuar.";
+    }
+
+    if (student->status == IN_PROGRESS && student->progress >= 30.0f && student->progress < 70.0f) {
+        return "Ka përparim, por duhet të intensifikoni punën për të përfunduar në kohë.";
+    }
+
+    if (student->status == IN_PROGRESS && student->progress >= 70.0f) {
+        return "Po shkoni mirë. Ruani ritmin dhe përqendrimin deri në përfundim.";
+    }
+
+    if (student->status == COMPLETED && student->progress >= 100.0f) {
+        if (student->category == SENIOR) {
+            return "Regjistrimi është përfunduar mirë. Student senior mund të konsiderojë projekte kërkimore shtesë.";
+        }
+        return "Regjistrimi është përfunduar plotësisht. Vazhdoni të ruani performancë të lartë.";
+    }
+
+    return "Ky regjistrim ka një kombinim interesant vlerash. Shikoni detajet për të vendosur hapat e ardhshëm.";
+}
+
+void printRecordWithAdvice(const StudentRecord *student) {
+    printf("\n=== Regjistrimi i gjetur ===\n");
+    printf("ID: %d\n", student->id);
+    printf("Emri: %s\n", student->name);
+    printf("Progresi: %.2f%%\n", student->progress);
+    printf("Statusi: %s\n", statusToString(student->status));
+    printf("Kategoria: %s\n", categoryToString(student->category));
+    printf("Paralajmërimi: %s\n", buildSearchAdvice(student));
+}
+
+int stringContainsIgnoreCase(const char *text, const char *pattern) {
+    return strcasestr(text, pattern) != NULL;
+}
+
+void searchRecords(StudentRecord students[], int count) {
+    if (count == 0) {
+        printf("\nNuk ka regjistrime për të kërkuar. Shtoni së paku një regjistrim.");
+        return;
+    }
+
+    int searchChoice;
+    char searchName[NAME_LENGTH];
+    int searchId;
+    int found = 0;
+
+    printf("\nZgjidhni mënyrën e kërkimit:\n");
+    printf("1. Kërko sipas ID-së\n");
+    printf("2. Kërko sipas emrit\n");
+
+    if (!readInt("Zgjedhja juaj: ", &searchChoice)) {
+        return;
+    }
+
+    switch (searchChoice) {
+        case 1:
+            if (!readInt("Vendosni ID-në për kërkim: ", &searchId)) {
+                return;
+            }
+
+            for (int i = 0; i < count; i++) {
+                if (students[i].id == searchId) {
+                    printRecordWithAdvice(&students[i]);
+                    found = 1;
+                    break;
+                }
+            }
+            break;
+
+        case 2:
+            printf("Vendosni emrin ose pjesën e tij për kërkim: ");
+            fgets(searchName, NAME_LENGTH, stdin);
+            searchName[strcspn(searchName, "\n")] = '\0';
+
+            if (strlen(searchName) == 0) {
+                printf("Emri i kërkuar nuk mund të jetë bosh.\n");
+                return;
+            }
+
+            for (int i = 0; i < count; i++) {
+                if (stringContainsIgnoreCase(students[i].name, searchName)) {
+                    printRecordWithAdvice(&students[i]);
+                    found = 1;
+                }
+            }
+            break;
+
+        default:
+            printf("Opsion i pavlefshëm për kërkim. Provoni përsëri.\n");
+            return;
+    }
+
+    if (!found) {
+        printf("\nNuk u gjet asnjë regjistrim që përputhet me kriteret e kërkimit.\n");
+    }
+}
+
 int main(void) {
     StudentRecord students[MAX_STUDENTS];
     int count = 0;
@@ -259,8 +362,9 @@ int main(void) {
         printf("\n===== STUDENT PROGRESS TRACKER =====\n");
         printf("1. Shto regjistrim\n");
         printf("2. Shfaq të gjitha regjistrimet\n");
-        printf("3. Raport analitik\n");
-        printf("4. Dil\n");
+        printf("3. Kërko regjistrim\n");
+        printf("4. Raport analitik\n");
+        printf("5. Dil\n");
 
         if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;
@@ -274,9 +378,12 @@ int main(void) {
                 displayAllRecords(students, count);
                 break;
             case 3:
-                printAnalyticsReport(students, count);
+                searchRecords(students, count);
                 break;
             case 4:
+                printAnalyticsReport(students, count);
+                break;
+            case 5:
                 printf("Programi po mbyllet...\n");
                 return 0;
             default:

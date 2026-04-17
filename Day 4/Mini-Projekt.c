@@ -4,6 +4,32 @@
 
 enum Status {NOT_STARTED, IN_PROGRESS, COMPLETED};
 
+void updateStudent(float *progress, enum Status *status) {
+    float newProgress;
+
+    printf("Enter new progress (0-100): ");
+    if (scanf("%f", &newProgress) != 1) { 
+        printf("Invalid input!\n");
+        return;
+    }
+
+    if (newProgress < 0 || newProgress > 100) {
+        printf("Invalid progress!\n");
+        return;
+    }
+
+    *progress = newProgress;
+
+    if (*progress == 0)
+        *status = NOT_STARTED;
+    else if (*progress < 100)
+        *status = IN_PROGRESS;
+    else
+        *status = COMPLETED;
+
+    printf("Student updated successfully!\n");
+}
+
 int main(){
     int ids[MAX];
     float progress[MAX];
@@ -16,11 +42,15 @@ int main(){
         printf("\n=== MENU ===\n");
         printf("1. Add Student\n");
         printf("2. Show Students\n");
-        printf("3. Edit Students Status\n");
-        printf("4. Show Report\n"); 
-        printf("5. Exit\n");       
+        printf("3. Edit Student Status\n");
+        printf("4. Show Report\n");
+        printf("5. Exit\n");
         printf("Enter Choice: ");
-        scanf("%d", &choice);
+
+        if (scanf("%d", &choice) != 1) { 
+            printf("Invalid input!\n");
+            return 1;
+        }
 
         switch(choice){
 
@@ -31,13 +61,19 @@ int main(){
                 }
 
                 printf("ID: ");
-                scanf("%d", &ids[count]);
+                if (scanf("%d", &ids[count]) != 1) { 
+                    printf("Invalid input!\n");
+                    return 1;
+                }
 
                 printf("Progress (0-100): ");
-                scanf("%f", &progress[count]);
+                if (scanf("%f", &progress[count]) != 1) { 
+                    printf("Invalid input!\n");
+                    return 1;
+                }
 
                 if (progress[count] < 0 || progress[count] > 100) {
-                    printf("Invalid progress! Must be 0-100.\n");
+                    printf("Invalid progress!\n");
                     break;
                 }
 
@@ -53,7 +89,6 @@ int main(){
                 count++;
 
                 printf("Student added successfully!\n");
-                printf("Total: %d/%d\n", count, MAX);
                 break;
 
 
@@ -87,7 +122,7 @@ int main(){
 
             case 3:
             {
-                int id, found = 0; 
+                int id, found = 0;
 
                 if (count == 0) {
                     printf("\nNo students to edit\n");
@@ -113,48 +148,17 @@ int main(){
                             break;
                     }
                 }
-                
+
                 printf("Enter Student ID To edit: ");
-                scanf("%d", &id);
+                if (scanf("%d", &id) != 1) { 
+                    printf("Invalid input!\n");
+                    return 1;
+                }
 
                 for (int i = 0; i < count; i++) {
                     if (ids[i] == id) {
                         found = 1;
-
-                        float newProgress;
-
-                        printf("Enter new progress (0-100): ");
-                        scanf("%f", &newProgress);
-                        
-                        if (newProgress < 0 || newProgress > 100) {
-                            printf("Invalid progress! Must be 0-100.\n");
-                            break;
-                        }
-            
-                        progress[i] = newProgress;
-
-                        int progressLevel;
-
-                        if (progress[i] == 0)
-                            progressLevel = 1;
-                        else if (progress[i] < 100)
-                            progressLevel = 2;
-                        else
-                            progressLevel = 3;
-
-                        switch(progressLevel) {
-                            case 1:
-                                status[i] = NOT_STARTED;
-                                break;
-                            case 2:
-                                status[i] = IN_PROGRESS;
-                                break;
-                            case 3:
-                                status[i] = COMPLETED;
-                                break;
-                        }
-
-                        printf("Student updated successfully!\n");
+                        updateStudent(&progress[i], &status[i]);
                         break;
                     }
                 }
@@ -179,20 +183,20 @@ int main(){
                 float max = progress[0];
                 float min = progress[0];
 
-                for (int i = 0; i < count; i++) {   
+                for (int i = 0; i < count; i++) {
                     sum += progress[i];
 
                     if (progress[i] > max)
-                        max = progress[i];       
+                        max = progress[i];
 
                     if (progress[i] < min)
-                        min = progress[i];        
+                        min = progress[i];
 
                     if (status[i] == COMPLETED)
-                        completed++;              
+                        completed++;
                 }
 
-                float avg = sum / count;          
+                float avg = sum / count;
 
                 printf("\n===== REPORT =====\n");
                 printf("Total students: %d\n", count);
@@ -218,7 +222,7 @@ int main(){
                 break;
 
             default:
-                printf("Invalid choice! Try again.\n");
+                printf("Invalid choice!\n");
         }
 
     } while (choice != 5);

@@ -1,0 +1,528 @@
+========================================
+    PROGRAMI PER PUNIMIN ME POINTERS     
+    INT DHE FLOAT - TESTIM KOMPREHENSIV 
+========================================
+
+
+--- TEST CASE 1 ---
+Inputi (INT): 5
+Inputi (FLOAT): 3.50
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 5, Përmes pointer: 5
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 3.50, Përmes pointer: 3.50
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 5
+  FLOAT: 3.50
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 15 (operacioni: +10)
+  FLOAT: 7.00 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 5 në 15)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 3.50 në 7.00)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 2 ---
+Inputi (INT): -10
+Inputi (FLOAT): -2.70
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -10, Përmes pointer: -10
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -2.70, Përmes pointer: -2.70
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -10
+  FLOAT: -2.70
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 0 (operacioni: +10)
+  FLOAT: -5.40 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -10 në 0)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -2.70 në -5.40)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 3 ---
+Inputi (INT): 0
+Inputi (FLOAT): 0.00
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 0, Përmes pointer: 0
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 0.00, Përmes pointer: 0.00
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 0
+  FLOAT: 0.00
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 10 (operacioni: +10)
+  FLOAT: 0.00 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 0 në 10)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: MBETI E NJËJTË (ngel në 0.00)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 4 ---
+Inputi (INT): 100
+Inputi (FLOAT): 15.80
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 100, Përmes pointer: 100
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 15.80, Përmes pointer: 15.80
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 100
+  FLOAT: 15.80
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 110 (operacioni: +10)
+  FLOAT: 31.60 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 100 në 110)
+  Intervali: JASHTA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 15.80 në 31.60)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 5 ---
+Inputi (INT): -50
+Inputi (FLOAT): -9.30
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -50, Përmes pointer: -50
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -9.30, Përmes pointer: -9.30
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -50
+  FLOAT: -9.30
+
+VLERAT PAS NDRYSHIMIT:
+  INT: -40 (operacioni: +10)
+  FLOAT: -18.60 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -50 në -40)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -9.30 në -18.60)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 6 ---
+Inputi (INT): 1
+Inputi (FLOAT): 1.10
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 1, Përmes pointer: 1
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 1.10, Përmes pointer: 1.10
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 1
+  FLOAT: 1.10
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 11 (operacioni: +10)
+  FLOAT: 2.20 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 1 në 11)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 1.10 në 2.20)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 7 ---
+Inputi (INT): -1
+Inputi (FLOAT): -0.50
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -1, Përmes pointer: -1
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -0.50, Përmes pointer: -0.50
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -1
+  FLOAT: -0.50
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 9 (operacioni: +10)
+  FLOAT: -1.00 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -1 në 9)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -0.50 në -1.00)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 8 ---
+Inputi (INT): 42
+Inputi (FLOAT): 42.20
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 42, Përmes pointer: 42
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 42.20, Përmes pointer: 42.20
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 42
+  FLOAT: 42.20
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 52 (operacioni: +10)
+  FLOAT: 84.40 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 42 në 52)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 42.20 në 84.40)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 9 ---
+Inputi (INT): -99
+Inputi (FLOAT): -99.90
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -99, Përmes pointer: -99
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -99.90, Përmes pointer: -99.90
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -99
+  FLOAT: -99.90
+
+VLERAT PAS NDRYSHIMIT:
+  INT: -89 (operacioni: +10)
+  FLOAT: -199.80 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -99 në -89)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -99.90 në -199.80)
+  Intervali: JASHTA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 10 ---
+Inputi (INT): 25
+Inputi (FLOAT): 25.50
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 25, Përmes pointer: 25
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 25.50, Përmes pointer: 25.50
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 25
+  FLOAT: 25.50
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 35 (operacioni: +10)
+  FLOAT: 51.00 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 25 në 35)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 25.50 në 51.00)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 11 ---
+Inputi (INT): 50
+Inputi (FLOAT): 50.10
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 50, Përmes pointer: 50
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 50.10, Përmes pointer: 50.10
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 50
+  FLOAT: 50.10
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 60 (operacioni: +10)
+  FLOAT: 100.20 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 50 në 60)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 50.10 në 100.20)
+  Intervali: JASHTA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 12 ---
+Inputi (INT): -75
+Inputi (FLOAT): -75.60
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -75, Përmes pointer: -75
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -75.60, Përmes pointer: -75.60
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -75
+  FLOAT: -75.60
+
+VLERAT PAS NDRYSHIMIT:
+  INT: -65 (operacioni: +10)
+  FLOAT: -151.20 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -75 në -65)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -75.60 në -151.20)
+  Intervali: JASHTA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 13 ---
+Inputi (INT): 10
+Inputi (FLOAT): 10.30
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 10, Përmes pointer: 10
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 10.30, Përmes pointer: 10.30
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 10
+  FLOAT: 10.30
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 20 (operacioni: +10)
+  FLOAT: 20.60 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 10 në 20)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 10.30 në 20.60)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 14 ---
+Inputi (INT): -25
+Inputi (FLOAT): -25.80
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -25, Përmes pointer: -25
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -25.80, Përmes pointer: -25.80
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -25
+  FLOAT: -25.80
+
+VLERAT PAS NDRYSHIMIT:
+  INT: -15 (operacioni: +10)
+  FLOAT: -51.60 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -25 në -15)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -25.80 në -51.60)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 15 ---
+Inputi (INT): 999
+Inputi (FLOAT): 99.90
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 999, Përmes pointer: 999
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 99.90, Përmes pointer: 99.90
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 999
+  FLOAT: 99.90
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 1009 (operacioni: +10)
+  FLOAT: 199.80 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 999 në 1009)
+  Intervali: JASHTA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 99.90 në 199.80)
+  Intervali: JASHTA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 16 ---
+Inputi (INT): -500
+Inputi (FLOAT): -50.00
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -500, Përmes pointer: -500
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -50.00, Përmes pointer: -50.00
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -500
+  FLOAT: -50.00
+
+VLERAT PAS NDRYSHIMIT:
+  INT: -490 (operacioni: +10)
+  FLOAT: -100.00 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -500 në -490)
+  Intervali: JASHTA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -50.00 në -100.00)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 17 ---
+Inputi (INT): 15
+Inputi (FLOAT): 15.40
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 15, Përmes pointer: 15
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 15.40, Përmes pointer: 15.40
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 15
+  FLOAT: 15.40
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 25 (operacioni: +10)
+  FLOAT: 30.80 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 15 në 25)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 15.40 në 30.80)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 18 ---
+Inputi (INT): -8
+Inputi (FLOAT): -8.20
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: -8, Përmes pointer: -8
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: -8.20, Përmes pointer: -8.20
+
+VLERAT PARE NDRYSHIMIT:
+  INT: -8
+  FLOAT: -8.20
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 2 (operacioni: +10)
+  FLOAT: -16.40 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga -8 në 2)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: ZVOGËLUAR (zvogëlohet nga -8.20 në -16.40)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 19 ---
+Inputi (INT): 33
+Inputi (FLOAT): 33.70
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 33, Përmes pointer: 33
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 33.70, Përmes pointer: 33.70
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 33
+  FLOAT: 33.70
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 43 (operacioni: +10)
+  FLOAT: 67.40 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 33 në 43)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: RRITUR (rritet nga 33.70 në 67.40)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+--- TEST CASE 20 ---
+Inputi (INT): 0
+Inputi (FLOAT): 0.00
+
+VLERAT FILLESTARE:
+  INT - Adresa: 0x7ffc28584700, Vlera direkte: 0, Përmes pointer: 0
+  FLOAT - Adresa: 0x7ffc28584704, Vlera direkte: 0.00, Përmes pointer: 0.00
+
+VLERAT PARE NDRYSHIMIT:
+  INT: 0
+  FLOAT: 0.00
+
+VLERAT PAS NDRYSHIMIT:
+  INT: 10 (operacioni: +10)
+  FLOAT: 0.00 (operacioni: *2)
+
+ANALIZA I NDRYSHIMIT (INT):
+  Rezultati: RRITUR (rritet nga 0 në 10)
+  Intervali: BRENDA intervalit [-100, 100]
+
+ANALIZA I NDRYSHIMIT (FLOAT):
+  Rezultati: MBETI E NJËJTË (ngel në 0.00)
+  Intervali: BRENDA intervalit [-100.0, 100.0]
+
+========================================
+
+PROGRAMI MBAROI TESTIMIN E TE GJITHA 20 RASTEVE.
+========================================

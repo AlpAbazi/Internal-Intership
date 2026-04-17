@@ -14,6 +14,13 @@ typedef struct {
     int size;
 } PatternRecord;
 
+// Function prototypes
+void printPattern(PatternType choice, int size);
+PatternType readPatternChoice(void);
+int readPatternSize(void);
+void displayRecords(const PatternRecord records[], int count);
+void updateRecord(PatternRecord *record);
+
 void printPattern(PatternType choice, int size) {
     switch (choice) {
         case STARS:
@@ -88,6 +95,20 @@ void displayRecords(const PatternRecord records[], int count) {
     }
 }
 
+void updateRecord(PatternRecord *record) {
+    printf("Updating record:\n");
+    printf("Current pattern: %s\n", record->choice == STARS ? "Stars" : "Numbers");
+    printf("Current size: %d\n", record->size);
+
+    PatternType newChoice = readPatternChoice();
+    int newSize = readPatternSize();
+
+    record->choice = newChoice;
+    record->size = newSize;
+
+    printf("Record updated successfully.\n");
+}
+
 int main(void) {
     PatternRecord records[MAX_RECORDS];
     int recordCount = 0;
@@ -97,7 +118,8 @@ int main(void) {
         printf("\nMenu:\n");
         printf("  1. Add new record\n");
         printf("  2. Show all records\n");
-        printf("  3. Exit\n");
+        printf("  3. Update record\n");
+        printf("  4. Exit\n");
         printf("Choose an option: ");
         scanf("%d", &option);
 
@@ -120,14 +142,29 @@ int main(void) {
                 break;
 
             case 3:
+                if (recordCount == 0) {
+                    printf("No records to update.\n");
+                } else {
+                    printf("Enter record number to update (1-%d): ", recordCount);
+                    int recordNum;
+                    scanf("%d", &recordNum);
+                    if (recordNum < 1 || recordNum > recordCount) {
+                        printf("Invalid record number.\n");
+                    } else {
+                        updateRecord(&records[recordNum - 1]);
+                    }
+                }
+                break;
+
+            case 4:
                 printf("Exiting program.\n");
                 break;
 
             default:
-                printf("Invalid option. Please choose 1, 2, or 3.\n");
+                printf("Invalid option. Please choose 1, 2, 3, or 4.\n");
                 break;
         }
-    } while (option != 3);
+    } while (option != 4);
 
     return 0;
 }

@@ -20,6 +20,8 @@ PatternType readPatternChoice(void);
 int readPatternSize(void);
 void displayRecords(const PatternRecord records[], int count);
 void updateRecord(PatternRecord *record);
+void sortRecordsByTypeAndSize(PatternRecord records[], int count);
+void displayRankedRecords(const PatternRecord records[], int count);
 
 void printPattern(PatternType choice, int size) {
     switch (choice) {
@@ -109,47 +111,125 @@ void updateRecord(PatternRecord *record) {
     printf("Record updated successfully.\n");
 }
 
+void sortRecordsByTypeAndSize(PatternRecord records[], int count) {
+    // Bubble sort: first by pattern type (STARS before NUMBERS), then by size (ascending)
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            int shouldSwap = 0;
+            
+            // First, sort by pattern type (STARS=0 comes before NUMBERS=1)
+            if (records[j].choice > records[j + 1].choice) {
+                shouldSwap = 1;
+            }
+            // If pattern types are the same, sort by size (ascending)
+            else if (records[j].choice == records[j + 1].choice && 
+                     records[j].size > records[j + 1].size) {
+                shouldSwap = 1;
+            }
+            
+            if (shouldSwap) {
+                // Swap records
+                PatternRecord temp = records[j];
+                records[j] = records[j + 1];
+                records[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void displayRankedRecords(const PatternRecord records[], int count) {
+    if (count == 0) {
+        printf("No saved records available.\n");
+        return;
+    }
+
+    printf("\n========================================\n");
+    printf("         RANKED RECORDS (Sorted)\n");
+    printf("========================================\n");
+    printf("Ranking by: Pattern Type → Size (ascending)\n");
+    printf("========================================\n\n");
+
+    for (int i = 0; i < count; i++) {
+        const PatternRecord *record = &records[i];
+        printf("Rank #%d:\n", i + 1);
+        printf("  Pattern Type: %s\n", record->choice == STARS ? "★ STARS" : "# NUMBERS");
+        printf("  Size: %d\n", record->size);
+        printf("  Example Output (first 3 rows):\n");
+        
+        // Show only first 3 rows for compact display
+        int rows_to_show = record->size < 3 ? record->size : 3;
+        for (int row = 1; row <= rows_to_show; row++) {
+            printf("    ");
+            if (record->choice == STARS) {
+                for (int col = 1; col <= row; col++) {
+                    printf("*");
+                }
+            } else {
+                for (int col = 1; col <= row; col++) {
+                    printf("%d", col);
+                }
+            }
+            printf("\n");
+        }
+        if (record->size > 3) {
+            printf("    ... (pattern continues to size %d)\n", record->size);
+        }
+        printf("\n");
+    }
+    printf("========================================\n\n");
+}
+
 int main(void) {
     PatternRecord records[MAX_RECORDS];
     int recordCount = 0;
     int option;
 
+    printf("\n╔════════════════════════════════════════╗\n");
+    printf("║    Pattern Manager - Mini Project    ║\n");
+    printf("║  Manage and rank pattern records!    ║\n");
+    printf("╚════════════════════════════════════════╝\n");
+
     do {
-        printf("\nMenu:\n");
-        printf("  1. Add new record\n");
-        printf("  2. Show all records\n");
-        printf("  3. Update record\n");
-        printf("  4. Exit\n");
-        printf("Choose an option: ");
+        printf("\n┌─ MAIN MENU ─────────────────────────────┐\n");
+        printf("│  1. Add new record                      │\n");
+        printf("│  2. Show all records                    │\n");
+        printf("│  3. Update record                       │\n");
+        printf("│  4. View ranked records (sorted)        │\n");
+        printf("│  5. Exit                                │\n");
+        printf("└─────────────────────────────────────────┘\n");
+        printf("Choose an option (1-5): ");
         scanf("%d", &option);
 
         switch (option) {
             case 1:
                 if (recordCount >= MAX_RECORDS) {
-                    printf("Cannot add new record: maximum capacity of %d reached.\n", MAX_RECORDS);
+                    printf("\n❌ Cannot add new record: maximum capacity of %d reached.\n", MAX_RECORDS);
                 } else {
+                    printf("\n➕ Adding new record...\n");
                     PatternType choice = readPatternChoice();
                     int size = readPatternSize();
                     records[recordCount].choice = choice;
                     records[recordCount].size = size;
                     recordCount++;
-                    printf("Record saved successfully. Current records: %d/%d.\n", recordCount, MAX_RECORDS);
+                    printf("✓ Record saved successfully. Current records: %d/%d.\n", recordCount, MAX_RECORDS);
                 }
                 break;
 
             case 2:
+                printf("\n📋 Displaying all records...\n");
                 displayRecords(records, recordCount);
                 break;
 
             case 3:
                 if (recordCount == 0) {
-                    printf("No records to update.\n");
+                    printf("\n⚠ No records to update.\n");
                 } else {
+                    printf("\n✏️  Updating record...\n");
                     printf("Enter record number to update (1-%d): ", recordCount);
                     int recordNum;
                     scanf("%d", &recordNum);
                     if (recordNum < 1 || recordNum > recordCount) {
-                        printf("Invalid record number.\n");
+                        printf("❌ Invalid record number.\n");
                     } else {
                         updateRecord(&records[recordNum - 1]);
                     }
@@ -157,14 +237,32 @@ int main(void) {
                 break;
 
             case 4:
-                printf("Exiting program.\n");
+                if (recordCount == 0) {
+                    printf("\n⚠ No records to rank.\n");
+                } else {
+                    printf("\n🏆 Generating ranking...\n");
+                    // Create a copy of records for sorting (to preserve original order)
+                    PatternRecord sortedRecords[MAX_RECORDS];
+                    for (int i = 0; i < recordCount; i++) {
+                        sortedRecords[i] = records[i];
+                    }
+                    // Sort the copy
+                    sortRecordsByTypeAndSize(sortedRecords, recordCount);
+                    // Display the ranked results
+                    displayRankedRecords(sortedRecords, recordCount);
+                }
+                break;
+
+            case 5:
+                printf("\n👋 Thank you for using Pattern Manager!\n");
+                printf("   Exiting program...\n\n");
                 break;
 
             default:
-                printf("Invalid option. Please choose 1, 2, 3, or 4.\n");
+                printf("\n❌ Invalid option. Please choose 1-5.\n");
                 break;
         }
-    } while (option != 4);
+    } while (option != 5);
 
     return 0;
 }

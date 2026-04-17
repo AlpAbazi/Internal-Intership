@@ -1,5 +1,6 @@
  #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX_STUDENTS 5
 #define NAME_LENGTH 50
@@ -118,6 +119,26 @@ void updateStatusByProgress(StudentRecord *student) {
     } else {
         student->status = COMPLETED;
     }
+}
+
+StudentRecord* findStudentById(StudentRecord students[], int count, int id) {
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            return &students[i];
+        }
+    }
+    return NULL;
+}
+
+void updateStudentProgress(StudentRecord *student, float newProgress) {
+    if (student == NULL) {
+        return;
+    }
+
+    student->progress = newProgress;
+    updateStatusByProgress(student);
+    printf("\nProgresi u perditesua ne %.2f%% për regjistrimin me ID %d.\n", student->progress, student->id);
+    printf("Statusi i ri: %s\n", statusToString(student->status));
 }
 
 void addStudentRecord(StudentRecord students[], int *count) {
@@ -288,7 +309,30 @@ void printRecordWithAdvice(const StudentRecord *student) {
 }
 
 int stringContainsIgnoreCase(const char *text, const char *pattern) {
-    return strcasestr(text, pattern) != NULL;
+    if (!text || !pattern) {
+        return 0;
+    }
+
+    size_t textLen = strlen(text);
+    size_t patternLen = strlen(pattern);
+    if (patternLen == 0 || patternLen > textLen) {
+        return 0;
+    }
+
+    for (size_t i = 0; i + patternLen <= textLen; i++) {
+        size_t j;
+        for (j = 0; j < patternLen; j++) {
+            char c1 = tolower((unsigned char)text[i + j]);
+            char c2 = tolower((unsigned char)pattern[j]);
+            if (c1 != c2) {
+                break;
+            }
+        }
+        if (j == patternLen) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void searchRecords(StudentRecord students[], int count) {
@@ -362,9 +406,10 @@ int main(void) {
         printf("\n===== STUDENT PROGRESS TRACKER =====\n");
         printf("1. Shto regjistrim\n");
         printf("2. Shfaq të gjitha regjistrimet\n");
-        printf("3. Kërko regjistrim\n");
-        printf("4. Raport analitik\n");
-        printf("5. Dil\n");
+        printf("3. Perditeso progresin e nje regjistrimi\n");
+        printf("4. Kërko regjistrim\n");
+        printf("5. Raport analitik\n");
+        printf("6. Dil\n");
 
         if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;
@@ -377,13 +422,34 @@ int main(void) {
             case 2:
                 displayAllRecords(students, count);
                 break;
-            case 3:
+            case 3: {
+                int targetId;
+                float newProgress;
+                if (!readInt("Vendosni ID-në e regjistrimit për përditësim: ", &targetId)) {
+                    break;
+                }
+                StudentRecord *student = findStudentById(students, count, targetId);
+                if (student == NULL) {
+                    printf("Nuk u gjet regjistrimi me ID %d.\n", targetId);
+                    break;
+                }
+                if (!readFloat("Vendosni progresin e ri (0 - 100): ", &newProgress)) {
+                    break;
+                }
+                if (newProgress < 0 || newProgress > 100) {
+                    printf("Progresi duhet të jetë nga 0 deri në 100.\n");
+                    break;
+                }
+                updateStudentProgress(student, newProgress);
+                break;
+            }
+            case 4:
                 searchRecords(students, count);
                 break;
-            case 4:
+            case 5:
                 printAnalyticsReport(students, count);
                 break;
-            case 5:
+            case 6:
                 printf("Programi po mbyllet...\n");
                 return 0;
             default:

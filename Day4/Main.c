@@ -3,27 +3,75 @@
 
 #define MAX 5
 
-// enum për status
 typedef enum {
     AKTIV = 1,
     NE_PROGRES,
     PERFUNDUAR
 } Status;
 
-// struct
 struct Student {
     char name[50];
     float grade;
     Status status;
 };
 
-// funksion për status në tekst
 const char* statusToString(Status s) {
     switch(s) {
         case AKTIV: return "Aktiv";
         case NE_PROGRES: return "Ne progres";
         case PERFUNDUAR: return "Perfunduar";
         default: return "I panjohur";
+    }
+}
+
+// funksion për raport
+void raport(struct Student students[], int count) {
+
+    if(count == 0) {
+        printf("\nNuk ka te dhena per raport.\n");
+        return;
+    }
+
+    int completed = 0;
+    float sum = 0;
+    float max = students[0].grade;
+    float min = students[0].grade;
+
+    for(int i = 0; i < count; i++) {
+
+        sum += students[i].grade;
+
+        if(students[i].status == PERFUNDUAR) {
+            completed++;
+        }
+
+        if(students[i].grade > max) {
+            max = students[i].grade;
+        }
+
+        if(students[i].grade < min) {
+            min = students[i].grade;
+        }
+    }
+
+    float avg = sum / count;
+
+    printf("\n--- RAPORT ---\n");
+    printf("Totali i regjistrimeve: %d\n", count);
+    printf("Te perfunduara: %d\n", completed);
+    printf("Mesatarja: %.2f\n", avg);
+    printf("Nota me e larte: %.2f\n", max);
+    printf("Nota me e ulet: %.2f\n", min);
+
+    // klasifikim
+    if(avg >= 9) {
+        printf("Vleresim: Shume mire\n");
+    } else if(avg >= 7) {
+        printf("Vleresim: Mire\n");
+    } else if(avg >= 5) {
+        printf("Vleresim: Mesatare\n");
+    } else {
+        printf("Vleresim: Dobet\n");
     }
 }
 
@@ -37,16 +85,17 @@ int main() {
         printf("\n--- MENU ---\n");
         printf("1. Shto regjistrim\n");
         printf("2. Shfaq regjistrimet\n");
+        printf("3. Raport analitik\n");
         printf("0. Dil\n");
         printf("Zgjedhja: ");
 
         if(scanf("%d", &choice) != 1) {
             printf("Input i pavlefshem.\n");
-            while(getchar() != '\n'); // pastrim
+            while(getchar() != '\n');
             continue;
         }
 
-        getchar(); // pastrim
+        getchar();
 
         switch(choice) {
 
@@ -70,9 +119,7 @@ int main() {
                 int statusChoice;
 
                 printf("Zgjedh statusin:\n");
-                printf("1. Aktiv\n");
-                printf("2. Ne progres\n");
-                printf("3. Perfundoar\n");
+                printf("1. Aktiv\n2. Ne progres\n3. Perfunduar\n");
                 printf("Zgjedhja: ");
 
                 if(scanf("%d", &statusChoice) != 1) {
@@ -82,15 +129,9 @@ int main() {
                 }
 
                 switch(statusChoice) {
-                    case 1:
-                        students[count].status = AKTIV;
-                        break;
-                    case 2:
-                        students[count].status = NE_PROGRES;
-                        break;
-                    case 3:
-                        students[count].status = PERFUNDUAR;
-                        break;
+                    case 1: students[count].status = AKTIV; break;
+                    case 2: students[count].status = NE_PROGRES; break;
+                    case 3: students[count].status = PERFUNDUAR; break;
                     default:
                         printf("Status i pavlefshem.\n");
                         break;
@@ -98,7 +139,7 @@ int main() {
 
                 count++;
                 printf("Regjistrimi u shtua.\n");
-                getchar(); // pastrim
+                getchar();
                 break;
 
             case 2:
@@ -107,13 +148,17 @@ int main() {
                 } else {
                     printf("\n--- LISTA ---\n");
                     for(int i = 0; i < count; i++) {
-                        printf("%d. Emri: %s | Nota: %.2f | Status: %s\n",
+                        printf("%d. %s | %.2f | %s\n",
                                i + 1,
                                students[i].name,
                                students[i].grade,
                                statusToString(students[i].status));
                     }
                 }
+                break;
+
+            case 3:
+                raport(students, count);
                 break;
 
             case 0:

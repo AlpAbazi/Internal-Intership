@@ -10,16 +10,47 @@ typedef enum {
     COMPLETED
 } Status;
 
+typedef enum {
+    CATEGORY_UNKNOWN,
+    FRESHMAN,
+    SOPHOMORE,
+    JUNIOR,
+    SENIOR
+} Category;
+
 typedef struct {
     int id;
     char name[NAME_LENGTH];
     float progress;
     Status status;
+    Category category;
 } StudentRecord;
 
-void clearInputBuffer() {
+void clearInputBuffer(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int readInt(const char *prompt, int *value) {
+    printf("%s", prompt);
+    if (scanf("%d", value) != 1) {
+        printf("Input i pavlefshëm. Ju lutem vendosni një numer të vlefshëm.\n");
+        clearInputBuffer();
+        return 0;
+    }
+    clearInputBuffer();
+    return 1;
+}
+
+int readFloat(const char *prompt, float *value) {
+    printf("%s", prompt);
+    if (scanf("%f", value) != 1) {
+        printf("Input i pavlefshëm. Ju lutem vendosni një numër valid.\n");
+        clearInputBuffer();
+        return 0;
+    }
+    clearInputBuffer();
+    return 1;
 }
 
 const char* statusToString(Status status) {
@@ -29,6 +60,54 @@ const char* statusToString(Status status) {
         case COMPLETED: return "Completed";
         default: return "Unknown";
     }
+}
+
+const char* categoryToString(Category category) {
+    switch (category) {
+        case FRESHMAN: return "Freshman";
+        case SOPHOMORE: return "Sophomore";
+        case JUNIOR: return "Junior";
+        case SENIOR: return "Senior";
+        default: return "Unknown";
+    }
+}
+
+Category selectCategory(void) {
+    int categoryChoice;
+    Category category = CATEGORY_UNKNOWN;
+
+    do {
+        printf("\nZgjidh kategorine e studentit:\n");
+        printf("1. Freshman\n");
+        printf("2. Sophomore\n");
+        printf("3. Junior\n");
+        printf("4. Senior\n");
+
+        if (!readInt("Zgjedhja juaj: ", &categoryChoice)) {
+            continue;
+        }
+
+        switch (categoryChoice) {
+            case 1:
+                category = FRESHMAN;
+                break;
+            case 2:
+                category = SOPHOMORE;
+                break;
+            case 3:
+                category = JUNIOR;
+                break;
+            case 4:
+                category = SENIOR;
+                break;
+            default:
+                printf("Opsion i pavlefshëm për kategorinë. Provoni përsëri.\n");
+                category = CATEGORY_UNKNOWN;
+                break;
+        }
+    } while (category == CATEGORY_UNKNOWN);
+
+    return category;
 }
 
 void updateStatusByProgress(StudentRecord *student) {
@@ -43,58 +122,52 @@ void updateStatusByProgress(StudentRecord *student) {
 
 void addStudentRecord(StudentRecord students[], int *count) {
     if (*count >= MAX_STUDENTS) {
-        printf("\nNuk mund te shtoni me shume regjistrime. Kapaciteti maksimal u arrit.\n");
+        printf("\nNuk mund të shtoni më shumë regjistrime. Kapaciteti maksimal u arrit.\n");
         return;
     }
 
-    StudentRecord newStudent;
+    StudentRecord newStudent = {0};
 
-    printf("\nVendos ID: ");
-    if (scanf("%d", &newStudent.id) != 1) {
-        printf("ID e pavlefshme.\n");
-        clearInputBuffer();
+    if (!readInt("\nVendos ID: ", &newStudent.id)) {
         return;
     }
-
-    clearInputBuffer();
 
     printf("Vendos emrin: ");
     fgets(newStudent.name, NAME_LENGTH, stdin);
     newStudent.name[strcspn(newStudent.name, "\n")] = '\0';
 
     if (strlen(newStudent.name) == 0) {
-        printf("Emri nuk mund te jete bosh.\n");
+        printf("Emri nuk mund të jetë bosh.\n");
         return;
     }
 
-    printf("Vendos progresin (0 - 100): ");
-    if (scanf("%f", &newStudent.progress) != 1) {
-        printf("Progres i pavlefshem.\n");
-        clearInputBuffer();
+    if (!readFloat("Vendos progresin (0 - 100): ", &newStudent.progress)) {
         return;
     }
 
     if (newStudent.progress < 0 || newStudent.progress > 100) {
-        printf("Progresi duhet te jete nga 0 deri ne 100.\n");
+        printf("Progresi duhet të jetë nga 0 deri në 100.\n");
         return;
     }
 
+    newStudent.category = selectCategory();
     updateStatusByProgress(&newStudent);
 
     students[*count] = newStudent;
     (*count)++;
 
     printf("Regjistrimi u shtua me sukses.\n");
+    printf("Statusi: %s | Kategoria: %s\n", statusToString(newStudent.status), categoryToString(newStudent.category));
     printf("Regjistrime aktuale: %d / %d\n", *count, MAX_STUDENTS);
 }
 
 void displayAllRecords(StudentRecord students[], int count) {
     if (count == 0) {
-        printf("\nNuk ka asnje regjistrim te ruajtur.\n");
+        printf("\nNuk ka asnjë regjistrim të ruajtur.\n");
         return;
     }
 
-    printf("\n===== TE GJITHA REGJISTRIMET =====\n");
+    printf("\n===== TË GJITHA REGJISTRIMET =====\n");
     printf("Regjistrime aktuale: %d / %d\n\n", count, MAX_STUDENTS);
 
     for (int i = 0; i < count; i++) {
@@ -103,25 +176,23 @@ void displayAllRecords(StudentRecord students[], int count) {
         printf("Emri: %s\n", students[i].name);
         printf("Progresi: %.2f%%\n", students[i].progress);
         printf("Statusi: %s\n", statusToString(students[i].status));
+        printf("Kategoria: %s\n", categoryToString(students[i].category));
         printf("--------------------------\n");
     }
 }
 
-int main() {
+int main(void) {
     StudentRecord students[MAX_STUDENTS];
     int count = 0;
     int choice;
 
-    do {
+    while (1) {
         printf("\n===== STUDENT PROGRESS TRACKER =====\n");
         printf("1. Shto regjistrim\n");
-        printf("2. Shfaq te gjitha regjistrimet\n");
+        printf("2. Shfaq të gjitha regjistrimet\n");
         printf("3. Dil\n");
-        printf("Zgjedhja juaj: ");
 
-        if (scanf("%d", &choice) != 1) {
-            printf("Ju lutem vendosni nje numer valid.\n");
-            clearInputBuffer();
+        if (!readInt("Zgjedhja juaj: ", &choice)) {
             continue;
         }
 
@@ -134,12 +205,10 @@ int main() {
                 break;
             case 3:
                 printf("Programi po mbyllet...\n");
-                break;
+                return 0;
             default:
-                printf("Opsion i pavlefshem. Provoni perseri.\n");
+                printf("Opsion i pavlefshëm. Provoni përsëri.\n");
+                break;
         }
-
-    } while (choice != 3);
-
-    return 0;
+    }
 }
